@@ -1,20 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Ethiopic:wght@400;500;700&display=swap');
 @import "tailwindcss";
-@config "../tailwind.config.js";
 
-@layer utilities {
-  .active-dot::after {
-    content: '';
-    position: absolute;
-    bottom: -4px;
-    width: 4px;
-    height: 4px;
-    background-color: currentColor;
-    border-radius: 9999px;
-  }
+@theme {
+  --color-primary: #00236f;
+  --color-primary-container: #1e3a8a;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #90a8ff;
   
-  .glass-card {
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-  }
+  --color-secondary: #006c49;
+  --color-secondary-container: #6cf8bb;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-container: #00714d;
+  
+  --color-surface: #f9f9ff;
+  --color-surface-dim: #cfdaf2;
+  --color-surface-bright: #f9f9ff;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f0f3ff;
+  --color-surface-container: #e7eeff;
+  --color-surface-container-high: #dee8ff;
+  
+  --color-on-surface: #111c2d;
+  --color-on-surface-variant: #444651;
+  
+  --color-outline: #757682;
+  --color-outline-variant: #c5c5d3;
+  
+  --color-slate-gray: #64748B;
+  --color-primary-fixed-dim: #b6c4ff;
+  --color-canvas: #F3F4F6;
+
+  --font-inter: 'Inter', sans-serif;
+  --font-ethiopic: 'Noto Sans Ethiopic', sans-serif;
+}
+
+body {
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.hero-gradient {
+  background: linear-gradient(135deg, rgba(0, 35, 111, 0.05) 0%, rgba(0, 108, 73, 0.05) 100%);
 }

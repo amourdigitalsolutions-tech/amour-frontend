@@ -7,5 +7,5 @@ export function useAuth() {
     // Logic to check JWT tokens will go here
   }, []);
 
-  return { isAuthenticated };
+  return { isAuthenticated, setIsAuthenticated };
 }

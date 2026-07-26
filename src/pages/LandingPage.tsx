@@ -1,148 +1,332 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Globe, BadgeCheck, ArrowRight, Truck, ShieldCheck, Users, Building2, Building, Factory, Landmark, Terminal, Smile } from 'lucide-react';
+import { translations } from '../constants/translations';
+import type { LanguageCode } from '../types';
 
-export default function LandingPage() {
+function Header({ lang, setLang, t }: { lang: string, setLang: (l: LanguageCode) => void, t: any }) {
+  const navigate = useNavigate();
+  
   return (
-    <div className="min-h-screen flex flex-col bg-background text-on-surface font-body-md overflow-x-hidden">
-      {/* Header / TopNavBar Segment */}
-      <header className="fixed top-0 left-0 w-full h-16 bg-white/90 backdrop-blur-md z-50 shadow-sm border-b border-outline-variant">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 h-full flex items-center justify-between">
-          {/* Brand Logo */}
-          <div className="flex items-center gap-3">
-            <img 
-              alt="Amour Trucking Hub Logo" 
-              className="h-10 w-auto" 
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBja6gxy2Ajk_yIS4at-r-ox5VBde3waeWnR_HOr9qU6dtNgO3c2fyAU-ojWf7aKBaBiwqtAEtckorkOrxRmKN-ouugoiyea1og42H0dMEbm0kIQ7IAYnpOB-9Ih2nhsZgPG5VXm17jnPzwNQw-fVVZA4pGEmNmp01V7HenePu__Z6UHGZyyusjW5MjrIL1RZzlMf012SgY0sXNbng0POJCvcFenhIdEhUb50-1sr9SMTdUM5b0mseyzg"
-            />
+    <header className="fixed top-0 left-0 w-full h-[64px] bg-white/90 backdrop-blur-md z-50 shadow-sm border-b border-outline-variant">
+      <div className="max-w-[1280px] mx-auto px-4 md:px-8 h-full flex items-center justify-between">
+        {/* Brand Logo */}
+        <div className="flex items-center gap-3">
+          <img 
+            alt="Amour Trucking Hub Logo" 
+            className="h-10 w-auto" 
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBja6gxy2Ajk_yIS4at-r-ox5VBde3waeWnR_HOr9qU6dtNgO3c2fyAU-ojWf7aKBaBiwqtAEtckorkOrxRmKN-ouugoiyea1og42H0dMEbm0kIQ7IAYnpOB-9Ih2nhsZgPG5VXm17jnPzwNQw-fVVZA4pGEmNmp01V7HenePu__Z6UHGZyyusjW5MjrIL1RZzlMf012SgY0sXNbng0POJCvcFenhIdEhUb50-1sr9SMTdUM5b0mseyzg" 
+          />
+        </div>
+
+        {/* Language Toggle (Center) */}
+        <nav className="hidden md:flex items-center bg-surface-container rounded-full p-1 border border-outline-variant">
+          {[
+            { code: 'en', label: 'EN' },
+            { code: 'am', label: 'አማርኛ' },
+            { code: 'ti', label: 'ትግርኛ' }
+          ].map((l) => (
+            <button 
+              key={l.code}
+              onClick={() => setLang(l.code as LanguageCode)}
+              className={`px-4 py-1.5 rounded-full transition-all duration-200 ease-in-out text-sm font-medium cursor-pointer active:scale-95 ${
+                lang === l.code 
+                  ? 'bg-primary text-on-primary font-inter shadow-md hover:shadow-lg hover:bg-primary-container' 
+                  : 'text-on-surface-variant hover:bg-surface-container-high hover:text-primary font-ethiopic'
+              }`}
+            >
+              {l.label}
+            </button>
+          ))}
+        </nav>
+
+        {/* Actions (Right) */}
+        <div className="flex items-center gap-4">
+          <button onClick={() => navigate('/login')} className="hidden sm:block text-primary text-sm font-medium hover:underline decoration-2 underline-offset-4 px-4 py-2 transition-all font-inter">
+            {t['landing-login']}
+          </button>
+          <button onClick={() => navigate('/signup')} className="bg-primary text-on-primary px-6 py-2.5 rounded-lg text-sm font-medium shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all font-inter">
+            {t['landing-join-waitlist']}
+          </button>
+          {/* Mobile Language Trigger */}
+          <button className="md:hidden p-2 text-on-surface-variant">
+            <Globe className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+function Hero({ t }: { t: any }) {
+  const navigate = useNavigate();
+  return (
+    <section className="relative w-full overflow-hidden hero-gradient">
+      <div className="max-w-[1280px] mx-auto flex flex-col md:flex-row items-center gap-12 py-16 px-4 md:px-8 mt-[64px]">
+        {/* Content Left */}
+        <div className="w-full md:w-1/2 space-y-8 z-10">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs font-medium">
+            <BadgeCheck className="w-4 h-4 text-on-secondary-container" fill="currentColor" />
+            <span className="font-inter">{t['hero-badge']}</span>
           </div>
-          {/* Language Toggle (Center) */}
-          <nav className="hidden md:flex items-center bg-surface-container rounded-full p-1 border border-outline-variant">
-            <button className="px-4 py-1.5 rounded-full bg-primary text-white font-label-md text-label-md transition-all">EN</button>
-            <button className="px-4 py-1.5 rounded-full text-on-surface-variant hover:bg-surface-container-high font-ethiopic-label text-ethiopic-label transition-all">አማርኛ</button>
-            <button className="px-4 py-1.5 rounded-full text-on-surface-variant hover:bg-surface-container-high font-ethiopic-label text-ethiopic-label transition-all">ትግርኛ</button>
-          </nav>
-          {/* Actions (Right) */}
-          <div className="flex items-center gap-4">
-            <Link to="/login" className="hidden sm:block text-primary font-label-md text-label-md hover:underline decoration-2 underline-offset-4 px-4 py-2 transition-all">
-              Log In
-            </Link>
-            <Link to="/signup" className="bg-primary text-white px-6 py-2.5 rounded-lg font-label-md text-label-md shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all">
-              Join the Waitlist
-            </Link>
-            {/* Mobile Language Trigger */}
-            <button className="md:hidden p-2 text-on-surface-variant">
-              <span className="material-symbols-outlined">language</span>
+          
+          <h1 className="text-4xl md:text-5xl font-bold text-primary leading-tight font-inter tracking-tight">
+            {t['hero-title']}
+          </h1>
+          
+          <p className="text-lg text-on-surface-variant max-w-xl font-inter leading-relaxed">
+            {t['hero-subtitle']}
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 pt-4">
+            <button onClick={() => navigate('/signup')} className="bg-primary text-white px-10 py-4 rounded-xl text-lg font-semibold shadow-xl shadow-primary/20 hover:bg-primary-container transition-all flex items-center justify-center gap-2 group font-inter">
+              {t['landing-join-waitlist']}
+              <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+            </button>
+            
+            <div className="flex items-center gap-4 px-4 py-2 bg-white/50 backdrop-blur rounded-lg border border-outline-variant">
+              <div className="flex -space-x-2">
+                <div className="w-8 h-8 rounded-full border-2 border-white bg-slate-gray flex items-center justify-center text-[10px] text-white font-inter">MK</div>
+                <div className="w-8 h-8 rounded-full border-2 border-white bg-secondary flex items-center justify-center text-[10px] text-white font-inter">AS</div>
+                <div className="w-8 h-8 rounded-full border-2 border-white bg-primary flex items-center justify-center text-[10px] text-white font-inter">TD</div>
+              </div>
+              <span className="text-sm font-medium text-on-surface-variant font-inter">{t['hero-joined']}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Image Right */}
+        <div className="w-full md:w-1/2 relative">
+          <div className="relative rounded-3xl overflow-hidden shadow-2xl animate-float">
+            <img 
+              className="w-full h-[500px] object-cover" 
+              alt="Professional East African truck driver in cab"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBwJrUYAxr9SgrnA1GLLtxI8qLXPjkVq4KaDGTPbEf4sCzzbksUTCOZtRCyE8CBa5PVVWflF_PyDh6lHtIuC1Hh8p5PUruxN9C87eDHw8kGpwX_mWehxTZ_JmRsJ4cB5-ulmK_nbPd9j_6yu2GtgShvz9QMgd-N_sbTRBlOa1BzCSMaWxi-QI4Y1kxdVlHWofHNX3ty-t3HcfsvhUS9oyx-4ntf66gx2SZvoALYB6nrhwN1Sx9m1jshw" 
+            />
+            
+            {/* Overlay Card */}
+            <div className="absolute bottom-6 left-6 right-6 p-6 glass-card rounded-2xl shadow-lg border-l-4 border-secondary">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-secondary/10 rounded-full">
+                  <Truck className="w-6 h-6 text-secondary" fill="currentColor" />
+                </div>
+                <div>
+                  <h4 className="text-lg font-semibold text-primary font-inter">{t['hero-leasing-title']}</h4>
+                  <p className="text-sm text-on-surface-variant font-inter">{t['hero-leasing-sub']}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Decorative Elements */}
+          <div className="absolute -top-12 -right-12 w-48 h-48 bg-secondary/10 rounded-full blur-3xl -z-10"></div>
+          <div className="absolute -bottom-12 -left-12 w-64 h-64 bg-primary/10 rounded-full blur-3xl -z-10"></div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Features({ t }: { t: any }) {
+  return (
+    <section className="py-24 bg-surface">
+      <div className="max-w-[1280px] mx-auto px-4 md:px-8">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl font-semibold text-primary mb-4 font-inter">{t['features-title']}</h2>
+          <div className="w-20 h-1 bg-secondary mx-auto rounded-full"></div>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Card 1 */}
+          <div className="bg-white p-8 rounded-2xl shadow-sm border border-outline-variant hover:shadow-md transition-all group">
+            <div className="w-16 h-16 bg-primary/5 text-primary rounded-2xl flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
+              <ShieldCheck className="w-8 h-8" />
+            </div>
+            <h3 className="text-xl font-semibold text-primary mb-3 font-inter">{t['feat1-title']}</h3>
+            <p className="text-base text-on-surface-variant leading-relaxed font-inter">{t['feat1-desc']}</p>
+          </div>
+
+          {/* Card 2 */}
+          <div className="bg-white p-8 rounded-2xl shadow-sm border border-outline-variant hover:shadow-md transition-all group">
+            <div className="w-16 h-16 bg-secondary/5 text-secondary rounded-2xl flex items-center justify-center mb-6 group-hover:bg-secondary group-hover:text-white transition-colors">
+              <Truck className="w-8 h-8" />
+            </div>
+            <h3 className="text-xl font-semibold text-primary mb-3 font-inter">{t['feat2-title']}</h3>
+            <p className="text-base text-on-surface-variant leading-relaxed font-inter">{t['feat2-desc']}</p>
+          </div>
+
+          {/* Card 3 */}
+          <div className="bg-white p-8 rounded-2xl shadow-sm border border-outline-variant hover:shadow-md transition-all group">
+            <div className="w-16 h-16 bg-primary-container/10 text-primary-container rounded-2xl flex items-center justify-center mb-6 group-hover:bg-primary-container group-hover:text-white transition-colors">
+              <Users className="w-8 h-8" />
+            </div>
+            <h3 className="text-xl font-semibold text-primary mb-3 font-inter">{t['feat3-title']}</h3>
+            <p className="text-base text-on-surface-variant leading-relaxed font-inter">{t['feat3-desc']}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SocialProof({ t }: { t: any }) {
+  return (
+    <section className="py-16 bg-primary text-white relative overflow-hidden">
+      <div className="max-w-[1280px] mx-auto px-4 md:px-8 relative z-10 text-center">
+        <p className="text-sm font-medium uppercase tracking-widest text-primary-fixed-dim mb-10 font-inter">
+          {t['proof-pre']}
+        </p>
+        <h3 className="text-3xl font-semibold mb-12 font-inter max-w-2xl mx-auto leading-tight">
+          {t['proof-title']}
+        </h3>
+        
+        <div className="flex flex-wrap justify-center gap-12 opacity-80 text-primary-fixed-dim">
+          <div className="flex flex-col items-center gap-2">
+            <Building2 className="w-10 h-10" />
+            <span className="text-xs font-medium font-inter">Atlanta, GA</span>
+          </div>
+          <div className="flex flex-col items-center gap-2">
+            <Building className="w-10 h-10" />
+            <span className="text-xs font-medium font-inter">Dallas, TX</span>
+          </div>
+          <div className="flex flex-col items-center gap-2">
+            <Factory className="w-10 h-10" />
+            <span className="text-xs font-medium font-inter">Seattle, WA</span>
+          </div>
+          <div className="flex flex-col items-center gap-2">
+            <Building2 className="w-10 h-10" />
+            <span className="text-xs font-medium font-inter">Columbus, OH</span>
+          </div>
+          <div className="flex flex-col items-center gap-2">
+            <Landmark className="w-10 h-10" />
+            <span className="text-xs font-medium font-inter">Washington, DC</span>
+          </div>
+        </div>
+      </div>
+      
+      {/* Abstract background pattern */}
+      <div 
+        className="absolute inset-0 opacity-10 pointer-events-none" 
+        style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '40px 40px' }}
+      ></div>
+    </section>
+  );
+}
+
+function CTASection({ t }: { t: any }) {
+  const navigate = useNavigate();
+  return (
+    <section className="py-24">
+      <div className="max-w-4xl mx-auto px-4 text-center bg-surface-container-low rounded-3xl p-12 border border-outline-variant shadow-lg relative overflow-hidden">
+        <div className="relative z-10">
+          <h2 className="text-4xl font-bold text-primary mb-6 font-inter tracking-tight">
+            {t['cta-title']}
+          </h2>
+          <p className="text-lg text-on-surface-variant mb-10 font-inter max-w-2xl mx-auto">
+            {t['cta-desc']}
+          </p>
+          
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-md mx-auto">
+            <input 
+              className="w-full px-6 py-4 rounded-xl border border-outline focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all font-inter bg-white" 
+              placeholder={t['placeholder-email']}
+              type="email" 
+            />
+            <button onClick={() => navigate('/signup')} className="w-full sm:w-auto bg-primary text-white px-8 py-4 rounded-xl text-sm font-medium whitespace-nowrap shadow-md hover:bg-primary/90 transition-all font-inter">
+              {t['landing-join-waitlist']}
             </button>
           </div>
         </div>
-      </header>
+        
+        {/* Decorative Circle */}
+        <div className="absolute -top-24 -left-24 w-64 h-64 bg-secondary/5 rounded-full pointer-events-none"></div>
+      </div>
+    </section>
+  );
+}
 
-      <main className="flex-grow pt-16">
-        {/* Hero Section */}
-        <section className="relative w-full overflow-hidden bg-gradient-to-br from-primary/5 to-secondary/5">
-          <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12 py-16 px-4 md:px-8">
-            {/* Content Left */}
-            <div className="w-full md:w-1/2 space-y-8 z-10">
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full font-label-sm text-label-sm">
-                <span className="material-symbols-outlined text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
-                <span>Official Partner for US Interstate Logistics</span>
-              </div>
-              <h1 className="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary leading-tight">
-                The All-in-One Gateway to Owning Your Trucking Fleet.
-              </h1>
-              <p className="font-body-lg text-body-lg text-on-surface-variant max-w-xl">
-                Simplified LLCs, fair truck financing, and trusted driver recruiting. We bridge the gap between compliance and community for East African entrepreneurs.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                <Link to="/signup" className="bg-primary text-white px-10 py-4 rounded-xl font-label-md text-headline-sm shadow-xl shadow-primary/20 hover:bg-primary-container transition-all flex items-center justify-center gap-2 group">
-                  Join the Waitlist
-                  <span className="material-symbols-outlined transition-transform group-hover:translate-x-1">arrow_forward</span>
-                </Link>
-                <div className="flex items-center gap-4 px-4 py-2 bg-white/50 backdrop-blur rounded-lg border border-outline-variant">
-                  <div className="flex -space-x-2">
-                    <div className="w-8 h-8 rounded-full border-2 border-white bg-slate-gray flex items-center justify-center text-[10px] text-white">MK</div>
-                    <div className="w-8 h-8 rounded-full border-2 border-white bg-secondary flex items-center justify-center text-[10px] text-white">AS</div>
-                    <div className="w-8 h-8 rounded-full border-2 border-white bg-primary flex items-center justify-center text-[10px] text-white">TD</div>
-                  </div>
-                  <span className="text-body-sm font-label-sm text-on-surface-variant">Joined by 400+ owners</span>
-                </div>
-              </div>
+function Footer({ t }: { t: any }) {
+  return (
+    <footer className="bg-surface-container-low border-t border-outline-variant py-16 mt-auto">
+      <div className="max-w-[1280px] mx-auto px-4 md:px-8">
+        <div className="flex flex-col md:flex-row justify-between gap-12 mb-12">
+          
+          <div className="max-w-xs">
+            <img 
+              alt="Amour Trucking Hub Footer Logo" 
+              className="h-10 w-auto mb-6 grayscale opacity-80" 
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBja6gxy2Ajk_yIS4at-r-ox5VBde3waeWnR_HOr9qU6dtNgO3c2fyAU-ojWf7aKBaBiwqtAEtckorkOrxRmKN-ouugoiyea1og42H0dMEbm0kIQ7IAYnpOB-9Ih2nhsZgPG5VXm17jnPzwNQw-fVVZA4pGEmNmp01V7HenePu__Z6UHGZyyusjW5MjrIL1RZzlMf012SgY0sXNbng0POJCvcFenhIdEhUb50-1sr9SMTdUM5b0mseyzg" 
+            />
+            <p className="text-sm text-on-surface-variant font-inter leading-relaxed">
+              {t['footer-desc']}
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-8">
+            <div className="space-y-4">
+              <h4 className="text-sm font-bold text-primary font-inter tracking-wide">{t['footer-sol']}</h4>
+              <ul className="space-y-2 text-sm text-on-surface-variant font-inter">
+                <li><a className="hover:text-primary transition-colors" href="#">{t['footer-llc']}</a></li>
+                <li><a className="hover:text-primary transition-colors" href="#">{t['footer-lease']}</a></li>
+                <li><a className="hover:text-primary transition-colors" href="#">{t['footer-jobs']}</a></li>
+              </ul>
             </div>
-            {/* Image Right */}
-            <div className="w-full md:w-1/2 relative">
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-                <img 
-                  className="w-full h-[500px] object-cover" 
-                  alt="Professional East African truck driver in cab" 
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBwJrUYAxr9SgrnA1GLLtxI8qLXPjkVq4KaDGTPbEf4sCzzbksUTCOZtRCyE8CBa5PVVWflF_PyDh6lHtIuC1Hh8p5PUruxN9C87eDHw8kGpwX_mWehxTZ_JmRsJ4cB5-ulmK_nbPd9j_6yu2GtgShvz9QMgd-N_sbTRBlOa1BzCSMaWxi-QI4Y1kxdVlHWofHNX3ty-t3HcfsvhUS9oyx-4ntf66gx2SZvoALYB6nrhwN1Sx9m1jshw" 
-                />
-                {/* Overlay Card */}
-                <div className="absolute bottom-6 left-6 right-6 p-6 glass-card rounded-2xl shadow-lg border-l-4 border-secondary bg-white/80 backdrop-blur-sm">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 bg-secondary/10 rounded-full">
-                      <span className="material-symbols-outlined text-secondary" style={{ fontVariationSettings: "'FILL' 1" }}>local_shipping</span>
-                    </div>
-                    <div>
-                      <h4 className="font-headline-sm text-headline-sm text-primary">Leasing Approved</h4>
-                      <p className="font-body-sm text-body-sm text-on-surface-variant">Fair terms for new owner-operators.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* Decorative Elements */}
-              <div className="absolute -top-12 -right-12 w-48 h-48 bg-secondary/10 rounded-full blur-3xl -z-10"></div>
-              <div className="absolute -bottom-12 -left-12 w-64 h-64 bg-primary/10 rounded-full blur-3xl -z-10"></div>
+            
+            <div className="space-y-4">
+              <h4 className="text-sm font-bold text-primary font-inter tracking-wide">{t['footer-comp']}</h4>
+              <ul className="space-y-2 text-sm text-on-surface-variant font-inter">
+                <li><a className="hover:text-primary transition-colors" href="#">{t['footer-about']}</a></li>
+                <li><a className="hover:text-primary transition-colors" href="#">{t['footer-contact']}</a></li>
+                <li><a className="hover:text-primary transition-colors" href="#">{t['footer-support']}</a></li>
+              </ul>
+            </div>
+            
+            <div className="space-y-4">
+              <h4 className="text-sm font-bold text-primary font-inter tracking-wide">{t['footer-legal']}</h4>
+              <ul className="space-y-2 text-sm text-on-surface-variant font-inter">
+                <li><a className="hover:text-primary transition-colors" href="#">{t['privacy-policy']}</a></li>
+                <li><a className="hover:text-primary transition-colors" href="#">{t['terms-of-service']}</a></li>
+              </ul>
             </div>
           </div>
-        </section>
-
-        {/* Value Proposition Section */}
-        <section className="py-24 bg-surface">
-          <div className="max-w-7xl mx-auto px-4 md:px-8">
-            <div className="text-center mb-16">
-              <h2 className="font-headline-md text-headline-md text-primary mb-4">Built for the Modern Carrier</h2>
-              <div className="w-20 h-1 bg-secondary mx-auto rounded-full"></div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* Card 1 */}
-              <div className="bg-white p-8 rounded-2xl shadow-sm border border-outline-variant hover:shadow-md transition-all group">
-                <div className="w-16 h-16 bg-primary/5 text-primary rounded-2xl flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
-                  <span className="material-symbols-outlined text-[32px]">shield</span>
-                </div>
-                <h3 className="font-headline-sm text-headline-sm text-primary mb-3">Automated Federal Compliance</h3>
-                <p className="font-body-md text-body-md text-on-surface-variant">
-                  Navigate USDOT, MC numbers, and IFTA filings without the headache. We handle the paperwork so you can focus on the road.
-                </p>
-              </div>
-              {/* Card 2 */}
-              <div className="bg-white p-8 rounded-2xl shadow-sm border border-outline-variant hover:shadow-md transition-all group">
-                <div className="w-16 h-16 bg-secondary/5 text-secondary rounded-2xl flex items-center justify-center mb-6 group-hover:bg-secondary group-hover:text-white transition-colors">
-                  <span className="material-symbols-outlined text-[32px]">local_shipping</span>
-                </div>
-                <h3 className="font-headline-sm text-headline-sm text-primary mb-3">Fair Equipment Leasing</h3>
-                <p className="font-body-md text-body-md text-on-surface-variant">
-                  Access top-tier freightliners and Volvos through our community-first financing models with no hidden fees or predatory rates.
-                </p>
-              </div>
-              {/* Card 3 */}
-              <div className="bg-white p-8 rounded-2xl shadow-sm border border-outline-variant hover:shadow-md transition-all group">
-                <div className="w-16 h-16 bg-tertiary-container/10 text-tertiary rounded-2xl flex items-center justify-center mb-6 group-hover:bg-tertiary group-hover:text-white transition-colors">
-                  <span className="material-symbols-outlined text-[32px]">groups</span>
-                </div>
-                <h3 className="font-headline-sm text-headline-sm text-primary mb-3">Verified Driver Network</h3>
-                <p className="font-body-md text-body-md text-on-surface-variant">
-                  Hire from a pre-vetted pool of experienced CDL drivers. We verify MVRs and past employment so you don't have to.
-                </p>
-              </div>
-            </div>
+        </div>
+        
+        <div className="pt-8 border-t border-outline-variant flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-sm text-on-surface-variant font-inter">
+            {t['footer-rights']}
+          </p>
+          <div className="flex items-center gap-6">
+            <a className="text-on-surface-variant hover:text-primary transition-all" href="#">
+              <Smile className="w-5 h-5" />
+            </a>
+            <a className="text-on-surface-variant hover:text-primary transition-all" href="#">
+              <Users className="w-5 h-5" />
+            </a>
+            <a className="text-on-surface-variant hover:text-primary transition-all" href="#">
+              <Terminal className="w-5 h-5" />
+            </a>
           </div>
-        </section>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+export default function LandingPage() {
+  const [lang, setLang] = useState<LanguageCode>('en');
+  const t = translations[lang];
+  const fontClass = lang === 'am' || lang === 'ti' ? 'font-ethiopic' : 'font-inter';
+
+  return (
+    <div className={`min-h-screen flex flex-col ${fontClass}`}>
+      <Header lang={lang} setLang={setLang} t={t} />
+      <main className="flex-grow">
+        <Hero t={t} />
+        <Features t={t} />
+        <SocialProof t={t} />
+        <CTASection t={t} />
       </main>
-      
-      {/* Footer */}
-      <footer className="w-full py-8 text-center bg-surface-container border-t border-outline-variant">
-        <p className="text-label-sm text-on-surface-variant opacity-70">© 2024 Amour Trucking Hub. All federal logistics regulations maintained.</p>
-      </footer>
+      <Footer t={t} />
     </div>
   );
 }
