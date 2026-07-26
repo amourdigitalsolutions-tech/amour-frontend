@@ -94,24 +94,24 @@ export default function Login() {
           <div className="flex rounded-full border border-outline-variant bg-surface-container p-1">
             <button
               onClick={() => setLang('en')}
-              className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 ${
-                lang === 'en' ? 'bg-primary text-white' : 'text-on-surface-variant hover:text-primary'
+              className={`cursor-pointer rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 ease-in-out active:scale-95 ${
+                lang === 'en' ? 'bg-primary text-white shadow-md hover:bg-primary-container hover:shadow-lg' : 'text-on-surface-variant hover:bg-surface-container-high hover:text-primary'
               }`}
             >
               EN
             </button>
             <button
               onClick={() => setLang('am')}
-              className={`font-ethiopic rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 ${
-                lang === 'am' ? 'bg-primary text-white' : 'text-on-surface-variant hover:text-primary'
+              className={`font-ethiopic cursor-pointer rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 ease-in-out active:scale-95 ${
+                lang === 'am' ? 'bg-primary text-white shadow-md hover:bg-primary-container hover:shadow-lg' : 'text-on-surface-variant hover:bg-surface-container-high hover:text-primary'
               }`}
             >
               አማርኛ
             </button>
             <button
               onClick={() => setLang('ti')}
-              className={`font-ethiopic rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 ${
-                lang === 'ti' ? 'bg-primary text-white' : 'text-on-surface-variant hover:text-primary'
+              className={`font-ethiopic cursor-pointer rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 ease-in-out active:scale-95 ${
+                lang === 'ti' ? 'bg-primary text-white shadow-md hover:bg-primary-container hover:shadow-lg' : 'text-on-surface-variant hover:bg-surface-container-high hover:text-primary'
               }`}
             >
               ትግርኛ
