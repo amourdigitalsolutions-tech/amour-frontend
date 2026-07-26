@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Globe, BadgeCheck, ArrowRight, Truck, ShieldCheck, Users, Building2, Building, Factory, Landmark, Terminal, Smile } from 'lucide-react';
+import { BadgeCheck, ArrowRight, Truck, ShieldCheck, Users, Building2, Building, Factory, Landmark, Terminal, Smile, ChevronDown, Check } from 'lucide-react';
 import { translations } from '../constants/translations';
 import type { LanguageCode } from '../types';
 import { getCurrentUser } from '../services/auth';
 
-function Header({ lang, setLang, t }: { lang: string, setLang: (l: LanguageCode) => void, t: any }) {
+function Header({ lang, setLang, t }: { lang: LanguageCode, setLang: (l: LanguageCode) => void, t: any }) {
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
+  const [langOpen, setLangOpen] = useState(false);
 
   useEffect(() => {
     getCurrentUser().then(data => {
@@ -27,26 +28,30 @@ function Header({ lang, setLang, t }: { lang: string, setLang: (l: LanguageCode)
           />
         </div>
 
-        {/* Language Toggle (Center) */}
-        <nav className="hidden md:flex items-center bg-surface-container rounded-full p-1 border border-outline-variant">
-          {[
-            { code: 'en', label: 'EN' },
-            { code: 'am', label: 'አማርኛ' },
-            { code: 'ti', label: 'ትግርኛ' }
-          ].map((l) => (
-            <button 
-              key={l.code}
-              onClick={() => setLang(l.code as LanguageCode)}
-              className={`px-4 py-1.5 rounded-full transition-all duration-200 ease-in-out text-sm font-medium cursor-pointer active:scale-95 ${
-                lang === l.code 
-                  ? 'bg-primary text-on-primary font-inter shadow-md hover:shadow-lg hover:bg-primary-container' 
-                  : 'text-on-surface-variant hover:bg-surface-container-high hover:text-primary font-ethiopic'
-              }`}
-            >
-              {l.label}
-            </button>
-          ))}
-        </nav>
+        {/* Language Selector Dropdown */}
+        <div className="relative">
+          <button 
+            onClick={() => setLangOpen(!langOpen)}
+            className="flex items-center gap-1 text-sm font-medium text-slate-600 hover:text-primary transition-colors cursor-pointer active:scale-95 py-2 px-3 rounded-lg border border-slate-200 bg-white shadow-sm"
+          >
+            <span>{lang.toUpperCase()}</span>
+            <ChevronDown className="w-4 h-4" />
+          </button>
+          
+          {langOpen && (
+            <div className="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg border border-slate-100 py-1 z-50">
+              <button onClick={() => { setLang('en'); setLangOpen(false); }} className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center justify-between cursor-pointer">
+                English {lang === 'en' && <Check className="w-4 h-4 text-primary" />}
+              </button>
+              <button onClick={() => { setLang('am'); setLangOpen(false); }} className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center justify-between cursor-pointer font-ethiopic">
+                አማርኛ {lang === 'am' && <Check className="w-4 h-4 text-primary" />}
+              </button>
+              <button onClick={() => { setLang('ti'); setLangOpen(false); }} className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center justify-between cursor-pointer font-ethiopic">
+                ትግርኛ {lang === 'ti' && <Check className="w-4 h-4 text-primary" />}
+              </button>
+            </div>
+          )}
+        </div>
 
         {/* Actions (Right) */}
         <div className="flex items-center gap-4">
@@ -69,10 +74,6 @@ function Header({ lang, setLang, t }: { lang: string, setLang: (l: LanguageCode)
               </button>
             </>
           )}
-          {/* Mobile Language Trigger */}
-          <button className="md:hidden p-2 text-on-surface-variant cursor-pointer">
-            <Globe className="w-5 h-5" />
-          </button>
         </div>
       </div>
     </header>

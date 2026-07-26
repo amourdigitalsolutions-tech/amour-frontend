@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ShieldCheck, Wallet, User, Lock, Eye, EyeOff, Smartphone } from 'lucide-react';
+import { ShieldCheck, Wallet, User, Lock, Eye, EyeOff, Smartphone, ChevronDown, Check } from 'lucide-react';
 import type { LanguageCode, ViewState } from '../types';
 import { translations } from '../constants/translations';
 import { loginWithPhone } from '../services/auth';
 
 export default function Login() {
   const [lang, setLang] = useState<LanguageCode>('en');
+  const [langOpen, setLangOpen] = useState(false);
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -89,35 +90,33 @@ export default function Login() {
           <span className="text-xl font-bold text-primary">Amour Hub</span>
         </div>
 
-        {/* Language Toggle */}
-        <nav className="absolute right-4 top-8 md:right-8">
-          <div className="flex rounded-full border border-outline-variant bg-surface-container p-1">
-            <button
-              onClick={() => setLang('en')}
-              className={`cursor-pointer rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 ease-in-out active:scale-95 ${
-                lang === 'en' ? 'bg-primary text-white shadow-md hover:bg-primary-container hover:shadow-lg' : 'text-on-surface-variant hover:bg-surface-container-high hover:text-primary'
-              }`}
+        {/* Language Toggle Dropdown */}
+        <div className="absolute right-4 top-8 md:right-8 z-30">
+          <div className="relative">
+            <button 
+              type="button"
+              onClick={() => setLangOpen(!langOpen)}
+              className="flex items-center gap-1 text-sm font-medium text-slate-600 hover:text-primary transition-colors cursor-pointer active:scale-95 py-2 px-3 rounded-lg border border-slate-200 bg-white shadow-sm"
             >
-              EN
+              <span>{lang.toUpperCase()}</span>
+              <ChevronDown className="w-4 h-4" />
             </button>
-            <button
-              onClick={() => setLang('am')}
-              className={`font-ethiopic cursor-pointer rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 ease-in-out active:scale-95 ${
-                lang === 'am' ? 'bg-primary text-white shadow-md hover:bg-primary-container hover:shadow-lg' : 'text-on-surface-variant hover:bg-surface-container-high hover:text-primary'
-              }`}
-            >
-              አማርኛ
-            </button>
-            <button
-              onClick={() => setLang('ti')}
-              className={`font-ethiopic cursor-pointer rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 ease-in-out active:scale-95 ${
-                lang === 'ti' ? 'bg-primary text-white shadow-md hover:bg-primary-container hover:shadow-lg' : 'text-on-surface-variant hover:bg-surface-container-high hover:text-primary'
-              }`}
-            >
-              ትግርኛ
-            </button>
+            
+            {langOpen && (
+              <div className="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg border border-slate-100 py-1 z-50">
+                <button type="button" onClick={() => { setLang('en'); setLangOpen(false); }} className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center justify-between cursor-pointer">
+                  English {lang === 'en' && <Check className="w-4 h-4 text-primary" />}
+                </button>
+                <button type="button" onClick={() => { setLang('am'); setLangOpen(false); }} className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center justify-between cursor-pointer font-ethiopic">
+                  አማርኛ {lang === 'am' && <Check className="w-4 h-4 text-primary" />}
+                </button>
+                <button type="button" onClick={() => { setLang('ti'); setLangOpen(false); }} className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center justify-between cursor-pointer font-ethiopic">
+                  ትግርኛ {lang === 'ti' && <Check className="w-4 h-4 text-primary" />}
+                </button>
+              </div>
+            )}
           </div>
-        </nav>
+        </div>
 
         {/* Login Form Container */}
         <div className="mt-24 flex w-full max-w-[400px] flex-col space-y-8 md:mt-8">
