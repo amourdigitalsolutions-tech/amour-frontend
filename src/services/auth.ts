@@ -73,6 +73,25 @@ export const getCurrentUser = async () => {
   return response.json();
 };
 
+export const updateUserProfile = async (profileData: Record<string, any>) => {
+  const token = localStorage.getItem('access_token');
+  if (!token) throw new Error('Not authenticated');
+
+  const response = await fetch(`${BASE_URL}/users/me/`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify(profileData)
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to update profile');
+  }
+  return response.json();
+};
+
 export const logout = () => {
   localStorage.removeItem('access_token');
   localStorage.removeItem('refresh_token');
