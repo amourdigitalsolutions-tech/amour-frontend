@@ -1,11 +1,19 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Globe, BadgeCheck, ArrowRight, Truck, ShieldCheck, Users, Building2, Building, Factory, Landmark, Terminal, Smile } from 'lucide-react';
 import { translations } from '../constants/translations';
 import type { LanguageCode } from '../types';
+import { getCurrentUser } from '../services/auth';
 
 function Header({ lang, setLang, t }: { lang: string, setLang: (l: LanguageCode) => void, t: any }) {
   const navigate = useNavigate();
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    getCurrentUser().then(data => {
+      if (data) setUser(data);
+    });
+  }, []);
   
   return (
     <header className="fixed top-0 left-0 w-full h-[64px] bg-white/90 backdrop-blur-md z-50 shadow-sm border-b border-outline-variant">
@@ -42,14 +50,27 @@ function Header({ lang, setLang, t }: { lang: string, setLang: (l: LanguageCode)
 
         {/* Actions (Right) */}
         <div className="flex items-center gap-4">
-          <button onClick={() => navigate('/login')} className="hidden sm:block text-primary text-sm font-medium hover:underline decoration-2 underline-offset-4 px-4 py-2 transition-all font-inter">
-            {t['landing-login']}
-          </button>
-          <button onClick={() => navigate('/signup')} className="bg-primary text-on-primary px-6 py-2.5 rounded-lg text-sm font-medium shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all font-inter">
-            {t['landing-join-waitlist']}
-          </button>
+          {user ? (
+            <>
+              <a href="http://marketplace.localhost:5173" className="hidden sm:block text-primary text-sm font-medium hover:underline decoration-2 underline-offset-4 px-4 py-2 transition-all font-inter">
+                Marketplace
+              </a>
+              <button onClick={() => navigate('/dashboard')} className="bg-primary text-on-primary px-6 py-2.5 rounded-lg text-sm font-medium shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all font-inter cursor-pointer">
+                Dashboard
+              </button>
+            </>
+          ) : (
+            <>
+              <button onClick={() => navigate('/login')} className="hidden sm:block text-primary text-sm font-medium hover:underline decoration-2 underline-offset-4 px-4 py-2 transition-all font-inter cursor-pointer">
+                {t['landing-login']}
+              </button>
+              <button onClick={() => navigate('/signup')} className="bg-primary text-on-primary px-6 py-2.5 rounded-lg text-sm font-medium shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all font-inter cursor-pointer">
+                {t['landing-join-waitlist']}
+              </button>
+            </>
+          )}
           {/* Mobile Language Trigger */}
-          <button className="md:hidden p-2 text-on-surface-variant">
+          <button className="md:hidden p-2 text-on-surface-variant cursor-pointer">
             <Globe className="w-5 h-5" />
           </button>
         </div>

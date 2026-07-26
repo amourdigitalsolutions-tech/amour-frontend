@@ -49,5 +49,32 @@ export const registerUser = async (data: { phone: string, password: string, role
     }
   }
   
+  
   return response.json();
+};
+
+export const getCurrentUser = async () => {
+  const token = localStorage.getItem('access_token');
+  if (!token) return null;
+
+  const response = await fetch(`${BASE_URL}/users/me/`, {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  });
+
+  if (!response.ok) {
+    if (response.status === 401) {
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+    }
+    return null;
+  }
+  return response.json();
+};
+
+export const logout = () => {
+  localStorage.removeItem('access_token');
+  localStorage.removeItem('refresh_token');
+  window.location.href = '/login';
 };

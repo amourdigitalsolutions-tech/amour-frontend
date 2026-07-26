@@ -134,7 +134,7 @@ export default function SignUp() {
           <form className="space-y-5" onSubmit={handleRegister}>
             {error && (
               <div className="rounded-lg bg-red-50 p-3 text-sm text-red-600">
-                {error}
+                {t[error as keyof typeof t] || error}
               </div>
             )}
             <div className="space-y-4">

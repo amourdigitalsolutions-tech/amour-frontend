@@ -58,11 +58,40 @@ const MOCK_TRUCKS = [
 
 export default function Marketplace() {
   const [lang, setLang] = useState<'en'|'am'|'ti'>(() => (localStorage.getItem('lang') as any) || 'en');
+  const [trucks, setTrucks] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const t = translations[lang];
 
   useEffect(() => {
     localStorage.setItem('lang', lang);
   }, [lang]);
+
+  useEffect(() => {
+    import('../services/marketplace').then(({ getVehicles }) => {
+      getVehicles().then(data => {
+        const results = Array.isArray(data) ? data : data.results || [];
+        if (results.length === 0) {
+          setTrucks(MOCK_TRUCKS);
+        } else {
+          // Format backend data to match TruckCard props if needed
+          const formatted = results.map((v: any) => ({
+            id: v.id,
+            title: `${v.year} ${v.make} ${v.model}`,
+            image: v.images && v.images.length > 0 ? v.images[0].image : MOCK_TRUCKS[0].image,
+            mileage: `${v.mileage} mi`,
+            fuelType: v.fuel_type || 'Diesel',
+            price: `$${parseFloat(v.price).toLocaleString()}`
+          }));
+          setTrucks(formatted);
+        }
+      }).catch(err => {
+        console.error(err);
+        setTrucks(MOCK_TRUCKS);
+      }).finally(() => {
+        setLoading(false);
+      });
+    });
+  }, []);
 
   return (
     <div className={`min-h-screen bg-surface text-slate-800 flex flex-col ${lang === 'en' ? 'font-inter' : 'font-noto-sans-ethiopic'}`}>
@@ -88,20 +117,24 @@ export default function Marketplace() {
           </div>
           
           {/* Marketplace Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 pb-12">
-            {MOCK_TRUCKS.map((truck) => (
-              <TruckCard 
-                key={truck.id}
-                id={truck.id}
-                title={truck.title}
-                image={truck.image}
-                mileage={truck.mileage}
-                fuelType={truck.fuelType}
-                price={truck.price}
-                t={t}
-              />
-            ))}
-          </div>
+          {loading ? (
+            <div className="flex justify-center py-20"><div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div></div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 pb-12">
+              {trucks.map((truck) => (
+                <TruckCard 
+                  key={truck.id}
+                  id={truck.id}
+                  title={truck.title}
+                  image={truck.image}
+                  mileage={truck.mileage}
+                  fuelType={truck.fuelType}
+                  price={truck.price}
+                  t={t}
+                />
+              ))}
+            </div>
+          )}
         </section>
       </main>
     </div>
