@@ -6,6 +6,13 @@ import SignUp from './pages/SignUp';
 import ChatRoom from './pages/ChatRoom';
 import Marketplace from './pages/Marketplace';
 import TruckDetails from './pages/TruckDetails';
+import DashboardLayout from './components/dashboard/DashboardLayout';
+import DashboardHome from './pages/dashboard/DashboardHome';
+import ProfilePage from './pages/dashboard/ProfilePage';
+import DriverDashboard from './pages/dashboard/DriverDashboard';
+import FleetOwnerDashboard from './pages/dashboard/FleetOwnerDashboard';
+import TruckSellerDashboard from './pages/dashboard/TruckSellerDashboard';
+import AdminDashboard from './pages/dashboard/AdminDashboard';
 
 export default function App() {
   const [subdomain, setSubdomain] = useState('');
@@ -25,8 +32,7 @@ export default function App() {
     return (
       <BrowserRouter>
         <Routes>
-          {/* Will route to ComplianceTracker.tsx in Phase 3 */}
-          <Route path="/" element={<div>Compliance Tracker Coming Soon</div>} />
+          <Route path="/" element={<DashboardLayout><FleetOwnerDashboard /></DashboardLayout>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
@@ -58,14 +64,22 @@ export default function App() {
     );
   }
 
-  // 4. Main / Default Router (Marketing & Auth)
+  // 4. Main / Default Router (Marketing & Auth & Dashboard)
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/dashboard" element={<div>Dashboard UI (Pending Design)</div>} />
+        
+        {/* Role-Based Adaptive Dashboard Suite */}
+        <Route path="/dashboard" element={<DashboardLayout><DashboardHome /></DashboardLayout>} />
+        <Route path="/dashboard/profile" element={<DashboardLayout><ProfilePage /></DashboardLayout>} />
+        <Route path="/dashboard/driver" element={<DashboardLayout><DriverDashboard /></DashboardLayout>} />
+        <Route path="/dashboard/fleet" element={<DashboardLayout><FleetOwnerDashboard /></DashboardLayout>} />
+        <Route path="/dashboard/inventory" element={<DashboardLayout><TruckSellerDashboard /></DashboardLayout>} />
+        <Route path="/dashboard/admin" element={<DashboardLayout><AdminDashboard /></DashboardLayout>} />
+        
         <Route path="/chat" element={<ChatRoom />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
