@@ -72,9 +72,6 @@ export const translations = {
     "footer-contact": "Contact Us",
     "footer-support": "Support",
     "footer-legal": "Legal",
-    "privacy-policy": "Privacy Policy",
-    "terms-of-service": "Terms of Service",
-    "placeholder-email": "Email Address",
     "footer-rights": "© 2026 Amour Trucking Hub. All rights reserved."
   },
   am: {
@@ -149,9 +146,6 @@ export const translations = {
     "footer-contact": "ያግኙን",
     "footer-support": "ድጋፍ",
     "footer-legal": "ህጋዊ",
-    "privacy-policy": "የግላዊነት ፖሊሲ",
-    "terms-of-service": "የአገልግሎት ውሎች",
-    "placeholder-email": "የኢሜይል አድራሻ",
     "footer-rights": "© 2026 Amour Trucking Hub. መብቱ በህግ የተጠበቀ ነው።"
   },
   ti: {
@@ -226,9 +220,6 @@ export const translations = {
     "footer-contact": "ርኸቡና",
     "footer-support": "ደገፍ",
     "footer-legal": "ሕጋዊ",
-    "privacy-policy": "ናይ ውልቃዊነት ፖሊሲ",
-    "terms-of-service": "ውዕላት ኣገልግሎት",
-    "placeholder-email": "ናይ ኢሜይል ኣድራሻ",
-    "footer-rights": "© 2026 Amour Trucking Hub. ኩሉ መሰል ዝተሓለወ እዩ።"
+    "footer-rights": "© 2026 Amour Trucking Hub. ኹሉ መሰላት ሕሉው እዩ።"
   }
 };

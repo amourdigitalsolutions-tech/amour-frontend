@@ -5,6 +5,8 @@ import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import Dashboard from './pages/Dashboard';
 import ChatRoom from './pages/ChatRoom';
+import Marketplace from './pages/Marketplace';
+import TruckDetails from './pages/TruckDetails';
 
 export default function App() {
   const [subdomain, setSubdomain] = useState('');
@@ -37,8 +39,8 @@ export default function App() {
     return (
       <BrowserRouter>
         <Routes>
-          {/* Will route to Marketplace.tsx in Phase 3 */}
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/" element={<Marketplace />} />
+          <Route path="/truck/:id" element={<TruckDetails />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
