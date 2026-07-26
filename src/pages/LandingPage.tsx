@@ -28,33 +28,33 @@ function Header({ lang, setLang, t }: { lang: LanguageCode, setLang: (l: Languag
           />
         </div>
 
-        {/* Language Selector Dropdown */}
-        <div className="relative">
-          <button 
-            onClick={() => setLangOpen(!langOpen)}
-            className="flex items-center gap-1 text-sm font-medium text-slate-600 hover:text-primary transition-colors cursor-pointer active:scale-95 py-2 px-3 rounded-lg border border-slate-200 bg-white shadow-sm"
-          >
-            <span>{lang.toUpperCase()}</span>
-            <ChevronDown className="w-4 h-4" />
-          </button>
-          
-          {langOpen && (
-            <div className="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg border border-slate-100 py-1 z-50">
-              <button onClick={() => { setLang('en'); setLangOpen(false); }} className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center justify-between cursor-pointer">
-                English {lang === 'en' && <Check className="w-4 h-4 text-primary" />}
-              </button>
-              <button onClick={() => { setLang('am'); setLangOpen(false); }} className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center justify-between cursor-pointer font-ethiopic">
-                አማርኛ {lang === 'am' && <Check className="w-4 h-4 text-primary" />}
-              </button>
-              <button onClick={() => { setLang('ti'); setLangOpen(false); }} className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center justify-between cursor-pointer font-ethiopic">
-                ትግርኛ {lang === 'ti' && <Check className="w-4 h-4 text-primary" />}
-              </button>
-            </div>
-          )}
-        </div>
-
         {/* Actions (Right) */}
         <div className="flex items-center gap-4">
+          {/* Language Selector Dropdown */}
+          <div className="relative">
+            <button 
+              onClick={() => setLangOpen(!langOpen)}
+              className="flex items-center gap-1 text-sm font-medium text-slate-600 hover:text-primary transition-colors cursor-pointer active:scale-95 py-2 px-3 rounded-lg border border-slate-200 bg-white shadow-sm"
+            >
+              <span>{lang.toUpperCase()}</span>
+              <ChevronDown className="w-4 h-4" />
+            </button>
+            
+            {langOpen && (
+              <div className="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg border border-slate-100 py-1 z-50">
+                <button onClick={() => { setLang('en'); setLangOpen(false); }} className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center justify-between cursor-pointer">
+                  English {lang === 'en' && <Check className="w-4 h-4 text-primary" />}
+                </button>
+                <button onClick={() => { setLang('am'); setLangOpen(false); }} className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center justify-between cursor-pointer font-ethiopic">
+                  አማርኛ {lang === 'am' && <Check className="w-4 h-4 text-primary" />}
+                </button>
+                <button onClick={() => { setLang('ti'); setLangOpen(false); }} className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center justify-between cursor-pointer font-ethiopic">
+                  ትግርኛ {lang === 'ti' && <Check className="w-4 h-4 text-primary" />}
+                </button>
+              </div>
+            )}
+          </div>
+
           {user ? (
             <>
               <a href="http://marketplace.localhost:5173" className="hidden sm:block text-primary text-sm font-medium hover:underline decoration-2 underline-offset-4 px-4 py-2 transition-all font-inter">
