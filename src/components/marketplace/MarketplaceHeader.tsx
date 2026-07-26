@@ -1,9 +1,18 @@
-import { Search, ChevronDown, Bell, User } from 'lucide-react';
+import { Search, ChevronDown, Bell, User, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 
-export default function MarketplaceHeader() {
+interface MarketplaceHeaderProps {
+  lang: 'en' | 'am' | 'ti';
+  setLang: (lang: 'en' | 'am' | 'ti') => void;
+  t: any;
+}
+
+export default function MarketplaceHeader({ lang, setLang, t }: MarketplaceHeaderProps) {
+  const [langOpen, setLangOpen] = useState(false);
+
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-slate-200 px-6 py-3 flex items-center justify-between shadow-sm font-inter">
+    <header className="sticky top-0 z-50 bg-white border-b border-slate-200 px-6 py-3 flex items-center justify-between shadow-sm">
       {/* Logo and Brand */}
       <Link to="/" className="flex items-center gap-3">
         <img 
@@ -22,7 +31,7 @@ export default function MarketplaceHeader() {
           </span>
           <input 
             className="block w-full pl-10 pr-3 py-2 border border-slate-200 rounded-lg bg-surface-container-low focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm" 
-            placeholder="Global Search" 
+            placeholder={t['market-search']}
             type="text"
           />
         </div>
@@ -31,10 +40,29 @@ export default function MarketplaceHeader() {
       {/* Header Actions */}
       <div className="flex items-center gap-6">
         {/* Language Selector */}
-        <button className="flex items-center gap-1 text-sm font-medium text-slate-600 hover:text-primary transition-colors cursor-pointer">
-          <span>EN</span>
-          <ChevronDown className="w-4 h-4" />
-        </button>
+        <div className="relative">
+          <button 
+            onClick={() => setLangOpen(!langOpen)}
+            className="flex items-center gap-1 text-sm font-medium text-slate-600 hover:text-primary transition-colors cursor-pointer active:scale-95"
+          >
+            <span>{lang.toUpperCase()}</span>
+            <ChevronDown className="w-4 h-4" />
+          </button>
+          
+          {langOpen && (
+            <div className="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg border border-slate-100 py-1 z-50">
+              <button onClick={() => { setLang('en'); setLangOpen(false); }} className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center justify-between cursor-pointer">
+                English {lang === 'en' && <Check className="w-4 h-4 text-primary" />}
+              </button>
+              <button onClick={() => { setLang('am'); setLangOpen(false); }} className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center justify-between cursor-pointer">
+                አማርኛ {lang === 'am' && <Check className="w-4 h-4 text-primary" />}
+              </button>
+              <button onClick={() => { setLang('ti'); setLangOpen(false); }} className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center justify-between cursor-pointer">
+                ትግርኛ {lang === 'ti' && <Check className="w-4 h-4 text-primary" />}
+              </button>
+            </div>
+          )}
+        </div>
 
         {/* Notification Bell */}
         <button className="text-slate-500 hover:text-primary relative cursor-pointer">

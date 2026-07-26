@@ -1,7 +1,9 @@
+import { useState, useEffect } from 'react';
 import MarketplaceHeader from '../components/marketplace/MarketplaceHeader';
 import SidebarFilters from '../components/marketplace/SidebarFilters';
 import TruckCard from '../components/marketplace/TruckCard';
 import { ChevronDown } from 'lucide-react';
+import { translations } from '../constants/translations';
 
 const MOCK_TRUCKS = [
   {
@@ -55,23 +57,30 @@ const MOCK_TRUCKS = [
 ];
 
 export default function Marketplace() {
+  const [lang, setLang] = useState<'en'|'am'|'ti'>(() => (localStorage.getItem('lang') as any) || 'en');
+  const t = translations[lang];
+
+  useEffect(() => {
+    localStorage.setItem('lang', lang);
+  }, [lang]);
+
   return (
-    <div className="min-h-screen bg-surface font-inter text-slate-800 flex flex-col">
-      <MarketplaceHeader />
+    <div className={`min-h-screen bg-surface text-slate-800 flex flex-col ${lang === 'en' ? 'font-inter' : 'font-noto-sans-ethiopic'}`}>
+      <MarketplaceHeader lang={lang} setLang={setLang} t={t} />
       
       <main className="flex flex-1 overflow-hidden">
-        <SidebarFilters />
+        <SidebarFilters t={t} />
         
         <section className="flex-1 p-6 overflow-y-auto">
           {/* Grid Header */}
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-slate-600 font-medium">Showing 12 results</h2>
+            <h2 className="text-slate-600 font-medium">{t['market-showing']}</h2>
             <div className="flex items-center gap-4">
-              <span className="text-sm font-semibold text-slate-500">Sort By</span>
+              <span className="text-sm font-semibold text-slate-500">{t['market-sort']}</span>
               <div className="relative">
                 <select className="appearance-none border border-slate-200 rounded-lg text-sm py-2 pl-3 pr-8 focus:ring-1 focus:ring-primary focus:border-primary bg-white cursor-pointer outline-none">
-                  <option>Newest, Price: Low to High</option>
-                  <option>Price: High to Low</option>
+                  <option>{t['market-sort-newest']}</option>
+                  <option>{t['market-sort-high']}</option>
                 </select>
                 <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
               </div>
@@ -89,6 +98,7 @@ export default function Marketplace() {
                 mileage={truck.mileage}
                 fuelType={truck.fuelType}
                 price={truck.price}
+                t={t}
               />
             ))}
           </div>

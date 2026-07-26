@@ -1,10 +1,19 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, CheckCircle2, TrendingUp, Fuel, Calculator, Truck, Calendar, Hash, Settings, ShieldCheck } from 'lucide-react';
 import MarketplaceHeader from '../components/marketplace/MarketplaceHeader';
+import { useState, useEffect } from 'react';
+import { translations } from '../constants/translations';
 
 export default function TruckDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+
+  const [lang, setLang] = useState<'en'|'am'|'ti'>(() => (localStorage.getItem('lang') as any) || 'en');
+  const t = translations[lang];
+
+  useEffect(() => {
+    localStorage.setItem('lang', lang);
+  }, [lang]);
 
   // Mock data mapping to our Django backend schema
   const truck = {
@@ -29,8 +38,8 @@ export default function TruckDetails() {
   };
 
   return (
-    <div className="min-h-screen bg-surface font-inter text-slate-800 flex flex-col">
-      <MarketplaceHeader />
+    <div className={`min-h-screen bg-surface text-slate-800 flex flex-col ${lang === 'en' ? 'font-inter' : 'font-noto-sans-ethiopic'}`}>
+      <MarketplaceHeader lang={lang} setLang={setLang} t={t} />
       
       <main className="max-w-[1280px] mx-auto w-full px-4 md:px-8 py-8 flex-1">
         <button 
@@ -38,7 +47,7 @@ export default function TruckDetails() {
           className="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-primary transition-colors mb-6 cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back to Listings
+          {t['market-back']}
         </button>
 
         <div className="flex flex-col lg:flex-row gap-8">
@@ -53,48 +62,48 @@ export default function TruckDetails() {
               {truck.is_available && (
                 <div className="absolute top-4 left-4 bg-green-500/90 text-white text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1 shadow-sm backdrop-blur-md">
                   <CheckCircle2 className="w-4 h-4" />
-                  Available Now
+                  {t['market-avail']}
                 </div>
               )}
             </div>
 
             <div className="bg-white p-8 rounded-2xl shadow-sm border border-outline-variant">
-              <h2 className="text-2xl font-bold text-primary mb-6">Vehicle Specifications</h2>
+              <h2 className="text-2xl font-bold text-primary mb-6">{t['market-specs']}</h2>
               
               <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
                 <div className="space-y-1">
                   <span className="text-sm font-medium text-slate-400 flex items-center gap-1">
-                    <Calendar className="w-4 h-4" /> Year
+                    <Calendar className="w-4 h-4" /> {t['market-year']}
                   </span>
                   <p className="font-semibold text-slate-700">{truck.year}</p>
                 </div>
                 <div className="space-y-1">
                   <span className="text-sm font-medium text-slate-400 flex items-center gap-1">
-                    <Truck className="w-4 h-4" /> Make & Model
+                    <Truck className="w-4 h-4" /> {t['market-make-model']}
                   </span>
                   <p className="font-semibold text-slate-700">{truck.make} {truck.model}</p>
                 </div>
                 <div className="space-y-1">
                   <span className="text-sm font-medium text-slate-400 flex items-center gap-1">
-                    <Hash className="w-4 h-4" /> VIN
+                    <Hash className="w-4 h-4" /> {t['market-vin']}
                   </span>
                   <p className="font-semibold text-slate-700 font-mono text-sm">{truck.vin}</p>
                 </div>
                 <div className="space-y-1">
                   <span className="text-sm font-medium text-slate-400 flex items-center gap-1">
-                    <TrendingUp className="w-4 h-4" /> Mileage
+                    <TrendingUp className="w-4 h-4" /> {t['market-mileage']}
                   </span>
                   <p className="font-semibold text-slate-700">{truck.mileage} mi</p>
                 </div>
                 <div className="space-y-1">
                   <span className="text-sm font-medium text-slate-400 flex items-center gap-1">
-                    <Fuel className="w-4 h-4" /> Fuel Type
+                    <Fuel className="w-4 h-4" /> {t['market-fuel']}
                   </span>
                   <p className="font-semibold text-slate-700">{truck.specs.fuelType}</p>
                 </div>
                 <div className="space-y-1">
                   <span className="text-sm font-medium text-slate-400 flex items-center gap-1">
-                    <Settings className="w-4 h-4" /> Engine
+                    <Settings className="w-4 h-4" /> {t['market-engine']}
                   </span>
                   <p className="font-semibold text-slate-700">{truck.specs.engine}</p>
                 </div>
@@ -102,11 +111,11 @@ export default function TruckDetails() {
 
               <div className="mt-8 pt-6 border-t border-slate-100 grid grid-cols-2 gap-6">
                  <div className="space-y-1">
-                  <span className="text-sm font-medium text-slate-400">Transmission</span>
+                  <span className="text-sm font-medium text-slate-400">{t['market-trans']}</span>
                   <p className="font-semibold text-slate-700">{truck.specs.transmission}</p>
                 </div>
                 <div className="space-y-1">
-                  <span className="text-sm font-medium text-slate-400">Sleeper</span>
+                  <span className="text-sm font-medium text-slate-400">{t['market-sleeper']}</span>
                   <p className="font-semibold text-slate-700">{truck.specs.sleeper_size}</p>
                 </div>
               </div>
@@ -126,20 +135,20 @@ export default function TruckDetails() {
               <div className="space-y-4">
                 <button className="w-full bg-primary text-white py-4 rounded-xl font-bold text-[15px] hover:bg-primary-container transition-colors shadow-md hover:shadow-lg cursor-pointer flex items-center justify-center gap-2">
                   <ShieldCheck className="w-5 h-5" />
-                  Apply for Lease
+                  {t['market-apply']}
                 </button>
                 <button className="w-full border-2 border-primary text-primary py-3.5 rounded-xl font-bold text-[15px] hover:bg-surface-container-low transition-colors cursor-pointer flex items-center justify-center gap-2">
                   <Calculator className="w-5 h-5" />
-                  Calculate Estimate
+                  {t['market-calc']}
                 </button>
               </div>
 
               <div className="mt-6 pt-6 border-t border-slate-100 text-center">
                 <p className="text-sm text-slate-400">
-                  Estimated monthly payments from <span className="font-bold text-primary">$2,450/mo</span>
+                  {t['market-est-monthly']} <span className="font-bold text-primary">$2,450/mo</span>
                 </p>
                 <p className="text-[11px] text-slate-400 mt-2 leading-relaxed">
-                  *Based on 20% down, 48 months, 8.5% APR for highly qualified buyers. Excludes taxes and registration fees.
+                  {t['market-disclaimer']}
                 </p>
               </div>
             </div>
