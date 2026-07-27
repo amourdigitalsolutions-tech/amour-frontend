@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import JobsHeader from '../../components/jobs/JobsHeader';
 import JobCard from '../../components/jobs/JobCard';
 import { getJobPostings, applyForJob } from '../../services/jobs';
@@ -194,13 +195,13 @@ export default function JobsPortal() {
             </p>
           </div>
 
-          <a 
-            href="http://localhost:5173/signup" 
+          <Link 
+            to="/signup" 
             className="relative z-10 bg-white text-primary font-bold px-6 py-3.5 rounded-2xl text-xs hover:bg-slate-100 transition-all shadow-lg flex items-center gap-2 cursor-pointer whitespace-nowrap"
           >
             Create Driver Profile
             <ArrowRight className="w-4 h-4" />
-          </a>
+          </Link>
         </div>
 
         {/* Filter Navigation Tabs */}

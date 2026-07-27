@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { BadgeCheck, ArrowRight, Truck, ShieldCheck, Users, Building2, Building, Factory, Landmark, Terminal, Smile, ChevronDown, Check } from 'lucide-react';
 import { translations } from '../constants/translations';
 import type { LanguageCode } from '../types';
@@ -57,9 +57,9 @@ function Header({ lang, setLang, t }: { lang: LanguageCode, setLang: (l: Languag
 
           {user ? (
             <>
-              <a href="http://marketplace.localhost:5173" className="hidden sm:block text-primary text-sm font-medium hover:underline decoration-2 underline-offset-4 px-4 py-2 transition-all font-inter">
+              <Link to="/marketplace" className="hidden sm:block text-primary text-sm font-medium hover:underline decoration-2 underline-offset-4 px-4 py-2 transition-all font-inter">
                 Marketplace
-              </a>
+              </Link>
               <button onClick={() => navigate('/dashboard')} className="bg-primary text-on-primary px-6 py-2.5 rounded-lg text-sm font-medium shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all font-inter cursor-pointer">
                 Dashboard
               </button>

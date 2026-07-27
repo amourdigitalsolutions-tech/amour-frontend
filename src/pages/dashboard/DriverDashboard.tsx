@@ -15,13 +15,13 @@ export default function DriverDashboard() {
             Manage your active lease estimate, track compliance requirements, and access community load opportunities.
           </p>
         </div>
-        <a 
-          href="http://marketplace.localhost:5173" 
+        <Link 
+          to="/marketplace" 
           className="relative z-10 bg-white text-primary font-bold px-5 py-3 rounded-xl text-xs hover:bg-slate-100 transition-all shadow-lg flex items-center gap-2 cursor-pointer"
         >
           Browse Marketplace Trucks
           <ArrowUpRight className="w-4 h-4" />
-        </a>
+        </Link>
       </div>
 
       {/* Driver Key Metrics */}
@@ -108,12 +108,12 @@ export default function DriverDashboard() {
             >
               Update Driver CDL Info
             </Link>
-            <a 
-              href="http://marketplace.localhost:5173" 
+            <Link 
+              to="/marketplace" 
               className="px-4 py-2 bg-primary text-white hover:bg-primary-container rounded-lg text-xs font-semibold transition-colors"
             >
               View More Trucks
-            </a>
+            </Link>
           </div>
         </div>
 

@@ -22,13 +22,13 @@ export default function FleetOwnerDashboard() {
           >
             Fleet Profile Info
           </Link>
-          <a 
-            href="http://marketplace.localhost:5173" 
+          <Link 
+            to="/marketplace" 
             className="bg-white text-primary font-bold px-4 py-2.5 rounded-xl text-xs hover:bg-slate-100 transition-all shadow-lg flex items-center gap-2 cursor-pointer"
           >
             Acquire New Trucks
             <ArrowUpRight className="w-4 h-4" />
-          </a>
+          </Link>
         </div>
       </div>
 

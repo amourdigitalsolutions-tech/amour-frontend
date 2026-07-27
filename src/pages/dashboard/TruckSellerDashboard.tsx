@@ -22,13 +22,13 @@ export default function TruckSellerDashboard() {
           >
             Dealer Profile
           </Link>
-          <a 
-            href="http://marketplace.localhost:5173" 
+          <Link 
+            to="/marketplace" 
             className="bg-white text-primary font-bold px-4 py-2.5 rounded-xl text-xs hover:bg-slate-100 transition-all shadow-lg flex items-center gap-2 cursor-pointer"
           >
             Go to Live Marketplace
             <ArrowUpRight className="w-4 h-4" />
-          </a>
+          </Link>
         </div>
       </div>
 
@@ -80,13 +80,13 @@ export default function TruckSellerDashboard() {
             <h2 className="text-base font-bold text-slate-900">Listed Vehicles & Lease Status</h2>
             <p className="text-xs text-slate-500">Manage your active trucks visible to buyers on the marketplace.</p>
           </div>
-          <a
-            href="http://marketplace.localhost:5173"
+          <Link
+            to="/marketplace"
             className="bg-primary hover:bg-primary-container text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-2 cursor-pointer transition-colors"
           >
             <PlusCircle className="w-4 h-4" />
             Add New Listing
-          </a>
+          </Link>
         </div>
 
         <div className="overflow-x-auto">

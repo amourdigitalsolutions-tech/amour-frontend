@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Search, ChevronDown, Bell, LogOut, Check, Globe } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { getCurrentUser, logout } from '../../services/auth';
 import type { LanguageCode } from '../../types';
 
@@ -23,7 +24,7 @@ export default function JobsHeader({ lang, setLang, searchTerm, setSearchTerm }:
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-slate-200 px-4 md:px-8 py-3.5 flex items-center justify-between shadow-sm">
       {/* Brand & Logo */}
-      <a href="http://localhost:5173" className="flex items-center gap-3">
+      <Link to="/" className="flex items-center gap-3">
         <img 
           alt="Amour Jobs Logo" 
           className="h-10 w-auto object-contain"
@@ -33,7 +34,7 @@ export default function JobsHeader({ lang, setLang, searchTerm, setSearchTerm }:
           <span className="text-lg font-bold text-primary tracking-tight block leading-none">Amour Recruitment</span>
           <span className="text-[10px] font-semibold text-emerald-600 tracking-wide uppercase">Driver Job Network</span>
         </div>
-      </a>
+      </Link>
 
       {/* Central Search Bar */}
       <div className="flex-1 max-w-lg mx-6 hidden sm:block">
@@ -88,21 +89,21 @@ export default function JobsHeader({ lang, setLang, searchTerm, setSearchTerm }:
               <Bell className="w-5 h-5" />
               <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white"></span>
             </button>
-            <a href="http://localhost:5173/dashboard" className="text-xs font-bold text-slate-800 bg-slate-100 hover:bg-slate-200 px-3 py-2 rounded-xl transition-all">
+            <Link to="/dashboard" className="text-xs font-bold text-slate-800 bg-slate-100 hover:bg-slate-200 px-3 py-2 rounded-xl transition-all">
               {user.phone_number}
-            </a>
+            </Link>
             <button onClick={() => logout()} className="text-slate-400 hover:text-rose-600 p-1 cursor-pointer" title="Log Out">
               <LogOut className="w-4 h-4" />
             </button>
           </div>
         ) : (
           <div className="flex items-center gap-2">
-            <a href="http://localhost:5173/login" className="text-xs font-bold text-primary hover:underline px-3 py-2">
+            <Link to="/login" className="text-xs font-bold text-primary hover:underline px-3 py-2">
               Log In
-            </a>
-            <a href="http://localhost:5173/signup" className="text-xs font-bold bg-primary text-white px-4 py-2 rounded-xl hover:bg-primary-container shadow-sm transition-all">
+            </Link>
+            <Link to="/signup" className="text-xs font-bold bg-primary text-white px-4 py-2 rounded-xl hover:bg-primary-container shadow-sm transition-all">
               Sign Up
-            </a>
+            </Link>
           </div>
         )}
       </div>
