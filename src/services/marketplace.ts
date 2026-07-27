@@ -1,4 +1,4 @@
-const BASE_URL = 'http://127.0.0.1:8000/api';
+import { API_BASE_URL as BASE_URL } from './api';
 
 export const getVehicles = async () => {
   const token = localStorage.getItem('access_token');

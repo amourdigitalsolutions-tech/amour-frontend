@@ -13,6 +13,7 @@ import DriverDashboard from './pages/dashboard/DriverDashboard';
 import FleetOwnerDashboard from './pages/dashboard/FleetOwnerDashboard';
 import TruckSellerDashboard from './pages/dashboard/TruckSellerDashboard';
 import AdminDashboard from './pages/dashboard/AdminDashboard';
+import JobsPortal from './pages/jobs/JobsPortal';
 
 export default function App() {
   const [subdomain, setSubdomain] = useState('');
@@ -52,7 +53,19 @@ export default function App() {
     );
   }
 
-  // 3. Chat Subdomain Router
+  // 3. Dedicated Jobs Subdomain Router (jobs.localhost or job.localhost)
+  if (subdomain === 'jobs' || subdomain === 'job') {
+    return (
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<JobsPortal />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
+    );
+  }
+
+  // 4. Chat Subdomain Router
   if (subdomain === 'chat') {
     return (
       <BrowserRouter>
@@ -64,7 +77,7 @@ export default function App() {
     );
   }
 
-  // 4. Main / Default Router (Marketing & Auth & Dashboard)
+  // 5. Main / Default Router (Marketing & Auth & Dashboard & Jobs)
   return (
     <BrowserRouter>
       <Routes>
@@ -80,6 +93,7 @@ export default function App() {
         <Route path="/dashboard/inventory" element={<DashboardLayout><TruckSellerDashboard /></DashboardLayout>} />
         <Route path="/dashboard/admin" element={<DashboardLayout><AdminDashboard /></DashboardLayout>} />
         
+        <Route path="/jobs" element={<JobsPortal />} />
         <Route path="/chat" element={<ChatRoom />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
