@@ -22,8 +22,9 @@ export default function App() {
     const host = window.location.hostname;
     const parts = host.split('.');
     
-    // Basic subdomain detection: (e.g. compliance.amourtruckinghub.com or compliance.localhost)
-    if (parts.length >= 3 || (parts.length >= 2 && parts[1] === 'localhost')) {
+    // Explicit subdomain detection: only match known subdomains (e.g. marketplace, jobs, compliance, chat)
+    const validSubdomains = ['compliance', 'marketplace', 'jobs', 'job', 'chat'];
+    if (validSubdomains.includes(parts[0])) {
       setSubdomain(parts[0]);
     }
   }, []);
