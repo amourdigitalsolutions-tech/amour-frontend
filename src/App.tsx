@@ -93,6 +93,8 @@ export default function App() {
         <Route path="/dashboard/inventory" element={<DashboardLayout><TruckSellerDashboard /></DashboardLayout>} />
         <Route path="/dashboard/admin" element={<DashboardLayout><AdminDashboard /></DashboardLayout>} />
         
+        <Route path="/marketplace" element={<Marketplace />} />
+        <Route path="/truck/:id" element={<TruckDetails />} />
         <Route path="/jobs" element={<JobsPortal />} />
         <Route path="/chat" element={<ChatRoom />} />
         <Route path="*" element={<Navigate to="/" replace />} />
