@@ -31,7 +31,7 @@ export default function App() {
   // 1. Compliance Subdomain Router
   if (subdomain === 'compliance') {
     return (
-      <BrowserRouter>
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
         <Routes>
           <Route path="/" element={<DashboardLayout><FleetOwnerDashboard /></DashboardLayout>} />
           <Route path="*" element={<Navigate to="/" replace />} />
@@ -43,7 +43,7 @@ export default function App() {
   // 2. Marketplace Subdomain Router
   if (subdomain === 'marketplace') {
     return (
-      <BrowserRouter>
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
         <Routes>
           <Route path="/" element={<Marketplace />} />
           <Route path="/truck/:id" element={<TruckDetails />} />
@@ -56,7 +56,7 @@ export default function App() {
   // 3. Dedicated Jobs Subdomain Router (jobs.localhost or job.localhost)
   if (subdomain === 'jobs' || subdomain === 'job') {
     return (
-      <BrowserRouter>
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
         <Routes>
           <Route path="/" element={<JobsPortal />} />
           <Route path="*" element={<Navigate to="/" replace />} />
@@ -68,7 +68,7 @@ export default function App() {
   // 4. Chat Subdomain Router
   if (subdomain === 'chat') {
     return (
-      <BrowserRouter>
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
         <Routes>
           <Route path="/" element={<ChatRoom />} />
           <Route path="*" element={<Navigate to="/" replace />} />
@@ -79,7 +79,7 @@ export default function App() {
 
   // 5. Main / Default Router (Marketing & Auth & Dashboard & Jobs)
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
