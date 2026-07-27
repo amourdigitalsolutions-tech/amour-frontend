@@ -1,20 +1,12 @@
-import { useState, useEffect } from 'react';
-import { getCurrentUser } from '../../services/auth';
 import DriverDashboard from './DriverDashboard';
 import FleetOwnerDashboard from './FleetOwnerDashboard';
 import TruckSellerDashboard from './TruckSellerDashboard';
 import AdminDashboard from './AdminDashboard';
+import { useAuth } from '../../context/AuthContext';
 
 export default function DashboardHome() {
-  const [role, setRole] = useState<string>('Driver');
-
-  useEffect(() => {
-    getCurrentUser().then(user => {
-      if (user && user.user_role) {
-        setRole(user.user_role);
-      }
-    });
-  }, []);
+  const { user } = useAuth();
+  const role = user?.user_role || 'Driver';
 
   if (role === 'Fleet Owner') {
     return <FleetOwnerDashboard />;

@@ -53,24 +53,36 @@ export const registerUser = async (data: { phone: string, password: string, role
   return response.json();
 };
 
+let currentUserPromise: Promise<any> | null = null;
+
 export const getCurrentUser = async () => {
   const token = localStorage.getItem('access_token');
   if (!token) return null;
 
-  const response = await fetch(`${BASE_URL}/users/me/`, {
+  // If a request is already in flight, return that promise
+  if (currentUserPromise) {
+    return currentUserPromise;
+  }
+
+  currentUserPromise = fetch(`${BASE_URL}/users/me/`, {
     headers: {
       'Authorization': `Bearer ${token}`
     }
+  }).then(response => {
+    if (!response.ok) {
+      if (response.status === 401) {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+      }
+      return null;
+    }
+    return response.json();
+  }).finally(() => {
+    // Clear the cached promise so next time it fetches fresh data
+    currentUserPromise = null;
   });
 
-  if (!response.ok) {
-    if (response.status === 401) {
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
-    }
-    return null;
-  }
-  return response.json();
+  return currentUserPromise;
 };
 
 export const updateUserProfile = async (profileData: Record<string, any>) => {

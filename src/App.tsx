@@ -16,6 +16,7 @@ import AdminDashboard from './pages/dashboard/AdminDashboard';
 import JobsPortal from './pages/jobs/JobsPortal';
 
 import ProtectedRoute from './components/auth/ProtectedRoute';
+import { AuthProvider } from './context/AuthContext';
 
 export default function App() {
   const [subdomain, setSubdomain] = useState('');
@@ -34,74 +35,84 @@ export default function App() {
   // 1. Compliance Subdomain Router
   if (subdomain === 'compliance') {
     return (
-      <BrowserRouter basename={import.meta.env.BASE_URL}>
-        <Routes>
-          <Route path="/" element={<ProtectedRoute allowedRoles={['Fleet Owner']}><DashboardLayout><FleetOwnerDashboard /></DashboardLayout></ProtectedRoute>} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter basename={import.meta.env.BASE_URL}>
+          <Routes>
+            <Route path="/" element={<ProtectedRoute allowedRoles={['Fleet Owner']}><DashboardLayout><FleetOwnerDashboard /></DashboardLayout></ProtectedRoute>} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
     );
   }
 
   // 2. Marketplace Subdomain Router
   if (subdomain === 'marketplace') {
     return (
-      <BrowserRouter basename={import.meta.env.BASE_URL}>
-        <Routes>
-          <Route path="/" element={<Marketplace />} />
-          <Route path="/truck/:id" element={<TruckDetails />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter basename={import.meta.env.BASE_URL}>
+          <Routes>
+            <Route path="/" element={<Marketplace />} />
+            <Route path="/truck/:id" element={<TruckDetails />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
     );
   }
 
   // 3. Dedicated Jobs Subdomain Router (jobs.localhost or job.localhost)
   if (subdomain === 'jobs' || subdomain === 'job') {
     return (
-      <BrowserRouter basename={import.meta.env.BASE_URL}>
-        <Routes>
-          <Route path="/" element={<JobsPortal />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter basename={import.meta.env.BASE_URL}>
+          <Routes>
+            <Route path="/" element={<JobsPortal />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
     );
   }
 
   // 4. Chat Subdomain Router
   if (subdomain === 'chat') {
     return (
-      <BrowserRouter basename={import.meta.env.BASE_URL}>
-        <Routes>
-          <Route path="/" element={<ProtectedRoute><ChatRoom /></ProtectedRoute>} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter basename={import.meta.env.BASE_URL}>
+          <Routes>
+            <Route path="/" element={<ProtectedRoute><ChatRoom /></ProtectedRoute>} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
     );
   }
 
   // 5. Main / Default Router (Marketing & Auth & Dashboard & Jobs)
   return (
-    <BrowserRouter basename={import.meta.env.BASE_URL}>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
-        
-        {/* Role-Based Adaptive Dashboard Suite (Protected & Role-Restricted) */}
-        <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout><DashboardHome /></DashboardLayout></ProtectedRoute>} />
-        <Route path="/dashboard/profile" element={<ProtectedRoute><DashboardLayout><ProfilePage /></DashboardLayout></ProtectedRoute>} />
-        <Route path="/dashboard/driver" element={<ProtectedRoute allowedRoles={['Driver']}><DashboardLayout><DriverDashboard /></DashboardLayout></ProtectedRoute>} />
-        <Route path="/dashboard/fleet" element={<ProtectedRoute allowedRoles={['Fleet Owner']}><DashboardLayout><FleetOwnerDashboard /></DashboardLayout></ProtectedRoute>} />
-        <Route path="/dashboard/inventory" element={<ProtectedRoute allowedRoles={['Truck Seller']}><DashboardLayout><TruckSellerDashboard /></DashboardLayout></ProtectedRoute>} />
-        <Route path="/dashboard/admin" element={<ProtectedRoute allowedRoles={['Admin']}><DashboardLayout><AdminDashboard /></DashboardLayout></ProtectedRoute>} />
-        
-        <Route path="/marketplace" element={<Marketplace />} />
-        <Route path="/truck/:id" element={<TruckDetails />} />
-        <Route path="/jobs" element={<JobsPortal />} />
-        <Route path="/chat" element={<ChatRoom />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+          
+          {/* Role-Based Adaptive Dashboard Suite (Protected & Role-Restricted) */}
+          <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout><DashboardHome /></DashboardLayout></ProtectedRoute>} />
+          <Route path="/dashboard/profile" element={<ProtectedRoute><DashboardLayout><ProfilePage /></DashboardLayout></ProtectedRoute>} />
+          <Route path="/dashboard/driver" element={<ProtectedRoute allowedRoles={['Driver']}><DashboardLayout><DriverDashboard /></DashboardLayout></ProtectedRoute>} />
+          <Route path="/dashboard/fleet" element={<ProtectedRoute allowedRoles={['Fleet Owner']}><DashboardLayout><FleetOwnerDashboard /></DashboardLayout></ProtectedRoute>} />
+          <Route path="/dashboard/inventory" element={<ProtectedRoute allowedRoles={['Truck Seller']}><DashboardLayout><TruckSellerDashboard /></DashboardLayout></ProtectedRoute>} />
+          <Route path="/dashboard/admin" element={<ProtectedRoute allowedRoles={['Admin']}><DashboardLayout><AdminDashboard /></DashboardLayout></ProtectedRoute>} />
+          
+          <Route path="/marketplace" element={<Marketplace />} />
+          <Route path="/truck/:id" element={<TruckDetails />} />
+          <Route path="/jobs" element={<JobsPortal />} />
+          <Route path="/chat" element={<ChatRoom />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }

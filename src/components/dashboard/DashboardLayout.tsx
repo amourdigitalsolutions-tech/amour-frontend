@@ -20,9 +20,10 @@ import {
   BarChart3,
   type LucideIcon
 } from 'lucide-react';
-import { getCurrentUser, logout } from '../../services/auth';
+import { logout } from '../../services/auth';
 import { translations } from '../../constants/translations';
 import type { LanguageCode } from '../../types';
+import { useAuth } from '../../context/AuthContext';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -36,8 +37,8 @@ interface NavItem {
 }
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
-  const [user, setUser] = useState<any>(null);
-  const [activeRole, setActiveRole] = useState<string>('Driver');
+  const { user } = useAuth();
+  const activeRole = user?.user_role || 'Driver';
   const [lang, setLang] = useState<LanguageCode>(() => (localStorage.getItem('lang') as LanguageCode) || 'en');
   const [langOpen, setLangOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
@@ -50,52 +51,43 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     localStorage.setItem('lang', lang);
   }, [lang]);
 
-  useEffect(() => {
-    getCurrentUser().then(data => {
-      if (data) {
-        setUser(data);
-        setActiveRole(data.user_role || 'Driver');
-      }
-    });
-  }, []);
-
   const getNavLinks = (): NavItem[] => {
     const common = [
-      { name: 'Dashboard Overview', path: '/dashboard', icon: LayoutDashboard },
-      { name: 'My Profile', path: '/dashboard/profile', icon: UserIcon },
+      { name: t['nav-overview'] || 'Dashboard Overview', path: '/dashboard', icon: LayoutDashboard },
+      { name: t['nav-profile'] || 'My Profile', path: '/dashboard/profile', icon: UserIcon },
     ];
 
     if (activeRole === 'Driver') {
       return [
         ...common,
-        { name: 'Lease & Equipment', path: '/dashboard/lease', icon: Truck, badge: 'Active' },
-        { name: 'Job Applications', path: '/dashboard/applications', icon: Briefcase },
-        { name: 'Compliance & CDL', path: '/dashboard/compliance', icon: ShieldCheck, badge: 'Verified' },
+        { name: t['nav-lease'] || 'Lease & Equipment', path: '/dashboard/lease', icon: Truck, badge: 'Active' },
+        { name: t['nav-apps'] || 'Job Applications', path: '/dashboard/applications', icon: Briefcase },
+        { name: t['nav-cdl'] || 'Compliance & CDL', path: '/dashboard/compliance', icon: ShieldCheck, badge: 'Verified' },
       ];
     } else if (activeRole === 'Fleet Owner') {
       return [
         ...common,
-        { name: 'My Fleet Units', path: '/dashboard/fleet', icon: Truck, badge: '12 Units' },
-        { name: 'Driver Applicants', path: '/dashboard/driver-requests', icon: Users, badge: '4 New' },
-        { name: 'Post New Job', path: '/dashboard/post-job', icon: PlusCircle },
-        { name: 'DOT & IFTA Filings', path: '/dashboard/compliance', icon: FileText },
+        { name: t['nav-fleet'] || 'My Fleet Units', path: '/dashboard/fleet', icon: Truck, badge: '12 Units' },
+        { name: t['nav-driver-req'] || 'Driver Applicants', path: '/dashboard/driver-requests', icon: Users, badge: '4 New' },
+        { name: t['nav-post-job'] || 'Post New Job', path: '/dashboard/post-job', icon: PlusCircle },
+        { name: t['nav-dot'] || 'DOT & IFTA Filings', path: '/dashboard/compliance', icon: FileText },
       ];
     } else if (activeRole === 'Truck Seller') {
       return [
         ...common,
-        { name: 'My Truck Listings', path: '/dashboard/inventory', icon: Store, badge: '8 Active' },
-        { name: 'Add New Vehicle', path: '/dashboard/add-truck', icon: PlusCircle },
-        { name: 'Buyer Inquiries', path: '/dashboard/inquiries', icon: Bell, badge: '3 Unread' },
-        { name: 'Sales Analytics', path: '/dashboard/analytics', icon: BarChart3 },
+        { name: t['nav-inventory'] || 'My Truck Listings', path: '/dashboard/inventory', icon: Store, badge: '8 Active' },
+        { name: t['nav-add-truck'] || 'Add New Vehicle', path: '/dashboard/add-truck', icon: PlusCircle },
+        { name: t['nav-inquiries'] || 'Buyer Inquiries', path: '/dashboard/inquiries', icon: Bell, badge: '3 Unread' },
+        { name: t['nav-analytics'] || 'Sales Analytics', path: '/dashboard/analytics', icon: BarChart3 },
       ];
     } else {
       // Admin
       return [
         ...common,
-        { name: 'User Management', path: '/dashboard/users', icon: Users },
-        { name: 'System Audit Logs', path: '/dashboard/audit', icon: FileText },
-        { name: 'Platform Approvals', path: '/dashboard/approvals', icon: ShieldCheck, badge: '5 Pending' },
-        { name: 'Global Settings', path: '/dashboard/settings', icon: Settings },
+        { name: t['nav-users'] || 'User Management', path: '/dashboard/users', icon: Users },
+        { name: t['nav-audit'] || 'System Audit Logs', path: '/dashboard/audit', icon: FileText },
+        { name: t['nav-approvals'] || 'Platform Approvals', path: '/dashboard/approvals', icon: ShieldCheck, badge: '5 Pending' },
+        { name: t['nav-settings'] || 'Global Settings', path: '/dashboard/settings', icon: Settings },
       ];
     }
   };
@@ -204,14 +196,14 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                   className="flex items-center gap-2 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 cursor-pointer"
                 >
                   <UserIcon className="w-4 h-4 text-slate-400" />
-                  View Profile & Target Fields
+                  {t['view-profile'] || 'View Profile & Target Fields'}
                 </Link>
                 <button
                   onClick={() => logout()}
                   className="w-full flex items-center gap-2 px-4 py-2 text-xs font-medium text-rose-600 hover:bg-rose-50 cursor-pointer"
                 >
                   <LogOut className="w-4 h-4" />
-                  Log Out
+                  {t['logout'] || 'Log Out'}
                 </button>
               </div>
             )}
@@ -230,9 +222,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             {/* Persona Indicator Badge */}
             <div className="bg-gradient-to-r from-primary/10 to-primary/5 p-3 rounded-xl border border-primary/20">
               <span className="text-[10px] font-bold tracking-wider text-primary uppercase block mb-0.5">
-                Current Persona
+                {t['current-persona'] || 'Current Persona'}
               </span>
-              <p className="text-sm font-bold text-slate-900">{activeRole} Portal</p>
+              <p className="text-sm font-bold text-slate-900">{activeRole} {t['portal'] || 'Portal'}</p>
               <p className="text-[11px] text-slate-500 mt-1 leading-snug">
                 {activeRole === 'Driver' && 'Leasing, Load Match & CDL Wallet'}
                 {activeRole === 'Fleet Owner' && 'Fleet Management, Drivers & Compliance'}
@@ -244,7 +236,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             {/* Navigation Section */}
             <nav className="space-y-1">
               <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-2">
-                Main Menu
+                {t['main-menu'] || 'Main Menu'}
               </p>
               {navLinks.map((link) => {
                 const Icon = link.icon;
@@ -282,7 +274,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             <div className="flex items-center justify-between text-xs text-slate-500">
               <span className="flex items-center gap-1.5">
                 <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                ZTA Compliant
+                {t['zta-compliant'] || 'ZTA Compliant'}
               </span>
               <span className="font-mono text-[10px]">v2.4</span>
             </div>

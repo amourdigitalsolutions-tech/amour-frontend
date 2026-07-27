@@ -1,42 +1,32 @@
-import { useState, useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { getCurrentUser } from '../../services/auth';
 import { Loader2 } from 'lucide-react';
+import { translations } from '../../constants/translations';
+import type { LanguageCode } from '../../types';
+import { useAuth } from '../../context/AuthContext';
 
 export default function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode, allowedRoles?: string[] }) {
-  const [authStatus, setAuthStatus] = useState<{ isAuth: boolean | null, role: string | null }>({ isAuth: null, role: null });
+  const { user, isLoading } = useAuth();
   const location = useLocation();
 
-  useEffect(() => {
-    getCurrentUser()
-      .then(user => {
-        if (user) {
-          setAuthStatus({ isAuth: true, role: user.user_role });
-        } else {
-          setAuthStatus({ isAuth: false, role: null });
-        }
-      })
-      .catch(() => {
-        setAuthStatus({ isAuth: false, role: null });
-      });
-  }, []);
+  const lang = (localStorage.getItem('lang') as LanguageCode) || 'en';
+  const t = translations[lang] || translations.en;
 
-  if (authStatus.isAuth === null) {
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
         <div className="flex flex-col items-center gap-4 text-primary">
           <Loader2 className="w-8 h-8 animate-spin" />
-          <p className="text-sm font-semibold animate-pulse">Authenticating...</p>
+          <p className="text-sm font-semibold animate-pulse">{t['authenticating'] || 'Authenticating...'}</p>
         </div>
       </div>
     );
   }
 
-  if (!authStatus.isAuth) {
+  if (!user) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (allowedRoles && authStatus.role && !allowedRoles.includes(authStatus.role)) {
+  if (allowedRoles && user.user_role && !allowedRoles.includes(user.user_role)) {
     return <Navigate to="/dashboard" replace />;
   }
 

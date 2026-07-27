@@ -4,6 +4,7 @@ import { ShieldCheck, Wallet, User, Lock, Eye, EyeOff, Smartphone, ChevronDown, 
 import type { LanguageCode, ViewState } from '../types';
 import { translations } from '../constants/translations';
 import { loginWithPhone } from '../services/auth';
+import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
   const [lang, setLang] = useState<LanguageCode>('en');
@@ -14,6 +15,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   
   const navigate = useNavigate();
+  const { refreshUser } = useAuth();
   const onNavigate = (view: ViewState) => navigate(view === 'signup' ? '/signup' : '/login');
   const [showPassword, setShowPassword] = useState(false);
 
@@ -23,6 +25,8 @@ export default function Login() {
     setLoading(true);
     try {
       await loginWithPhone(phone, password);
+      // Fetch user profile into global context
+      await refreshUser();
       // Success! Navigate to dashboard
       navigate('/dashboard');
     } catch (err: any) {

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { User, ShieldCheck, Save, CheckCircle2, Building2, Truck, Store, Lock, Mail, Phone, MapPin, Award, Hash } from 'lucide-react';
-import { getCurrentUser, updateUserProfile } from '../../services/auth';
+import { updateUserProfile } from '../../services/auth';
+import { useAuth } from '../../context/AuthContext';
 
 export default function ProfilePage() {
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -30,46 +32,43 @@ export default function ProfilePage() {
   });
 
   useEffect(() => {
-    getCurrentUser().then(data => {
-      if (data) {
-        setFormData({
-          user_role: data.user_role || 'Driver',
-          phone_number: data.phone_number || '',
-          language_preference: data.language_preference || 'en',
-          full_name: data.full_name || 'Ermias Haile',
-          email: data.email || 'ermias@amourtrucking.com',
-          city_state: data.city_state || 'Atlanta, GA',
-          cdl_number: data.cdl_number || 'GA-CDL-948201',
-          cdl_class: data.cdl_class || 'Class A',
-          experience_years: data.experience_years || 5,
-          endorsements: data.endorsements || 'HazMat, Tanker, Doubles',
-          company_name: data.company_name || 'Horn Logistics LLC',
-          dot_number: data.dot_number || 'USDOT-3928104',
-          fleet_size: data.fleet_size || 12,
-          dealership_name: data.dealership_name || 'Diaspora Truck Sales & Leasing',
-          dealer_license: data.dealer_license || 'DLR-GA-88410',
-        });
-      } else {
-        // Fallback for demo when backend is offline or unauthenticated
-        const demoRole = localStorage.getItem('demo_role') || 'Driver';
-        setFormData(prev => ({
-          ...prev,
-          user_role: demoRole,
-          phone_number: '+1 (555) 019-2834',
-          full_name: demoRole === 'Fleet Owner' ? 'Tewodros Bekele' : demoRole === 'Truck Seller' ? 'Solomon Dealership' : demoRole === 'Admin' ? 'System Administrator' : 'Ermias Haile',
-          email: `${demoRole.toLowerCase().replace(' ', '')}@amourtrucking.com`,
-          city_state: 'Dallas, TX',
-          cdl_number: 'TX-CDL-882194',
-          company_name: 'Habesha Transport LLC',
-          dot_number: 'USDOT-3498120',
-          dealership_name: 'Amour Commercial Trucks Inc.',
-          dealer_license: 'DLR-TX-99412'
-        }));
-      }
-    }).finally(() => {
-      setLoading(false);
-    });
-  }, []);
+    if (user) {
+      setFormData({
+        user_role: user.user_role || 'Driver',
+        phone_number: user.phone_number || '',
+        language_preference: user.language_preference || 'en',
+        full_name: user.full_name || 'Ermias Haile',
+        email: user.email || 'ermias@amourtrucking.com',
+        city_state: user.city_state || 'Atlanta, GA',
+        cdl_number: user.cdl_number || 'GA-CDL-948201',
+        cdl_class: user.cdl_class || 'Class A',
+        experience_years: user.experience_years || 5,
+        endorsements: user.endorsements || 'HazMat, Tanker, Doubles',
+        company_name: user.company_name || 'Horn Logistics LLC',
+        dot_number: user.dot_number || 'USDOT-3928104',
+        fleet_size: user.fleet_size || 12,
+        dealership_name: user.dealership_name || 'Diaspora Truck Sales & Leasing',
+        dealer_license: user.dealer_license || 'DLR-GA-88410',
+      });
+    } else {
+      // Fallback for demo when backend is offline or unauthenticated
+      const demoRole = localStorage.getItem('demo_role') || 'Driver';
+      setFormData(prev => ({
+        ...prev,
+        user_role: demoRole,
+        phone_number: '+1 (555) 019-2834',
+        full_name: demoRole === 'Fleet Owner' ? 'Tewodros Bekele' : demoRole === 'Truck Seller' ? 'Solomon Dealership' : demoRole === 'Admin' ? 'System Administrator' : 'Ermias Haile',
+        email: `${demoRole.toLowerCase().replace(' ', '')}@amourtrucking.com`,
+        city_state: 'Dallas, TX',
+        cdl_number: 'TX-CDL-882194',
+        company_name: 'Habesha Transport LLC',
+        dot_number: 'USDOT-3498120',
+        dealership_name: 'Amour Commercial Trucks Inc.',
+        dealer_license: 'DLR-TX-99412'
+      }));
+    }
+    setLoading(false);
+  }, [user]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;

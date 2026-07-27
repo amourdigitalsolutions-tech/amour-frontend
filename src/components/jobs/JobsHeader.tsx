@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Search, ChevronDown, Bell, LogOut, Check, Globe } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { getCurrentUser, logout } from '../../services/auth';
+import { logout } from '../../services/auth';
 import type { LanguageCode } from '../../types';
+import { useAuth } from '../../context/AuthContext';
 
 interface JobsHeaderProps {
   lang: LanguageCode;
@@ -13,13 +14,7 @@ interface JobsHeaderProps {
 
 export default function JobsHeader({ lang, setLang, searchTerm, setSearchTerm }: JobsHeaderProps) {
   const [langOpen, setLangOpen] = useState(false);
-  const [user, setUser] = useState<any>(null);
-
-  useEffect(() => {
-    getCurrentUser().then(data => {
-      if (data) setUser(data);
-    });
-  }, []);
+  const { user } = useAuth();
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-slate-200 px-4 md:px-8 py-3.5 flex items-center justify-between shadow-sm">

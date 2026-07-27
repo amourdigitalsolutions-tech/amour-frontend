@@ -1,20 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { BadgeCheck, ArrowRight, Truck, ShieldCheck, Users, Building2, Building, Factory, Landmark, Terminal, Smile, ChevronDown, Check } from 'lucide-react';
+import { BadgeCheck, ArrowRight, Truck, ShieldCheck, Users, Building2, Building, Factory, ChevronDown, Check, Landmark, Terminal, Smile } from 'lucide-react';
 import { translations } from '../constants/translations';
 import type { LanguageCode } from '../types';
-import { getCurrentUser } from '../services/auth';
+import { useAuth } from '../context/AuthContext';
 
 function Header({ lang, setLang, t }: { lang: LanguageCode, setLang: (l: LanguageCode) => void, t: any }) {
   const navigate = useNavigate();
-  const [user, setUser] = useState<any>(null);
+  const { user } = useAuth();
   const [langOpen, setLangOpen] = useState(false);
-
-  useEffect(() => {
-    getCurrentUser().then(data => {
-      if (data) setUser(data);
-    });
-  }, []);
   
   return (
     <header className="fixed top-0 left-0 w-full h-[64px] bg-white/90 backdrop-blur-md z-50 shadow-sm border-b border-outline-variant">
