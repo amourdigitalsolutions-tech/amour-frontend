@@ -40,7 +40,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [activeRole, setActiveRole] = useState<string>('Driver');
   const [lang, setLang] = useState<LanguageCode>(() => (localStorage.getItem('lang') as LanguageCode) || 'en');
   const [langOpen, setLangOpen] = useState(false);
-  const [roleMenuOpen, setRoleMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -56,28 +55,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       if (data) {
         setUser(data);
         setActiveRole(data.user_role || 'Driver');
-      } else {
-        // Mock fallback user for immediate dev preview
-        const storedRole = localStorage.getItem('demo_role') || 'Driver';
-        setUser({
-          phone_number: '+1 (555) 019-2834',
-          user_role: storedRole,
-          full_name: storedRole === 'Fleet Owner' ? 'Tewodros Bekele' : storedRole === 'Truck Seller' ? 'Solomon Logistics Inc.' : storedRole === 'Admin' ? 'System Administrator' : 'Ermias Haile',
-          email: 'user@amourtrucking.com'
-        });
-        setActiveRole(storedRole);
       }
     });
   }, []);
-
-  const handleRoleChange = (newRole: string) => {
-    setActiveRole(newRole);
-    localStorage.setItem('demo_role', newRole);
-    if (user) {
-      setUser({ ...user, user_role: newRole });
-    }
-    setRoleMenuOpen(false);
-  };
 
   const getNavLinks = (): NavItem[] => {
     const common = [
@@ -161,37 +141,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
         {/* Right Action Icons & Role Switcher */}
         <div className="flex items-center gap-3">
-          {/* Demo Role Switcher Dropdown */}
-          <div className="relative">
-            <button
-              onClick={() => setRoleMenuOpen(!roleMenuOpen)}
-              className="flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-all cursor-pointer"
-            >
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span>Role: {activeRole}</span>
-              <ChevronDown className="w-3.5 h-3.5" />
-            </button>
-
-            {roleMenuOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-xl shadow-xl py-1 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
-                <div className="px-3 py-1.5 text-[11px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100">
-                  Switch Persona Demo
-                </div>
-                {['Driver', 'Fleet Owner', 'Truck Seller', 'Admin'].map((r) => (
-                  <button
-                    key={r}
-                    onClick={() => handleRoleChange(r)}
-                    className={`w-full text-left px-4 py-2 text-xs font-medium flex items-center justify-between hover:bg-slate-50 cursor-pointer ${
-                      activeRole === r ? 'text-primary font-bold bg-primary/5' : 'text-slate-700'
-                    }`}
-                  >
-                    {r}
-                    {activeRole === r && <ShieldCheck className="w-4 h-4 text-primary" />}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+          {/* The Persona Demo Switcher has been removed since authentication handles the role */}
 
           {/* Language Toggle */}
           <div className="relative">

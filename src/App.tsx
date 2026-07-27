@@ -15,6 +15,8 @@ import TruckSellerDashboard from './pages/dashboard/TruckSellerDashboard';
 import AdminDashboard from './pages/dashboard/AdminDashboard';
 import JobsPortal from './pages/jobs/JobsPortal';
 
+import ProtectedRoute from './components/auth/ProtectedRoute';
+
 export default function App() {
   const [subdomain, setSubdomain] = useState('');
 
@@ -34,7 +36,7 @@ export default function App() {
     return (
       <BrowserRouter basename={import.meta.env.BASE_URL}>
         <Routes>
-          <Route path="/" element={<DashboardLayout><FleetOwnerDashboard /></DashboardLayout>} />
+          <Route path="/" element={<ProtectedRoute allowedRoles={['Fleet Owner']}><DashboardLayout><FleetOwnerDashboard /></DashboardLayout></ProtectedRoute>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
@@ -71,7 +73,7 @@ export default function App() {
     return (
       <BrowserRouter basename={import.meta.env.BASE_URL}>
         <Routes>
-          <Route path="/" element={<ChatRoom />} />
+          <Route path="/" element={<ProtectedRoute><ChatRoom /></ProtectedRoute>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
@@ -86,13 +88,13 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         
-        {/* Role-Based Adaptive Dashboard Suite */}
-        <Route path="/dashboard" element={<DashboardLayout><DashboardHome /></DashboardLayout>} />
-        <Route path="/dashboard/profile" element={<DashboardLayout><ProfilePage /></DashboardLayout>} />
-        <Route path="/dashboard/driver" element={<DashboardLayout><DriverDashboard /></DashboardLayout>} />
-        <Route path="/dashboard/fleet" element={<DashboardLayout><FleetOwnerDashboard /></DashboardLayout>} />
-        <Route path="/dashboard/inventory" element={<DashboardLayout><TruckSellerDashboard /></DashboardLayout>} />
-        <Route path="/dashboard/admin" element={<DashboardLayout><AdminDashboard /></DashboardLayout>} />
+        {/* Role-Based Adaptive Dashboard Suite (Protected & Role-Restricted) */}
+        <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout><DashboardHome /></DashboardLayout></ProtectedRoute>} />
+        <Route path="/dashboard/profile" element={<ProtectedRoute><DashboardLayout><ProfilePage /></DashboardLayout></ProtectedRoute>} />
+        <Route path="/dashboard/driver" element={<ProtectedRoute allowedRoles={['Driver']}><DashboardLayout><DriverDashboard /></DashboardLayout></ProtectedRoute>} />
+        <Route path="/dashboard/fleet" element={<ProtectedRoute allowedRoles={['Fleet Owner']}><DashboardLayout><FleetOwnerDashboard /></DashboardLayout></ProtectedRoute>} />
+        <Route path="/dashboard/inventory" element={<ProtectedRoute allowedRoles={['Truck Seller']}><DashboardLayout><TruckSellerDashboard /></DashboardLayout></ProtectedRoute>} />
+        <Route path="/dashboard/admin" element={<ProtectedRoute allowedRoles={['Admin']}><DashboardLayout><AdminDashboard /></DashboardLayout></ProtectedRoute>} />
         
         <Route path="/marketplace" element={<Marketplace />} />
         <Route path="/truck/:id" element={<TruckDetails />} />

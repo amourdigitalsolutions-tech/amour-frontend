@@ -12,25 +12,8 @@ export default function DashboardHome() {
     getCurrentUser().then(user => {
       if (user && user.user_role) {
         setRole(user.user_role);
-      } else {
-        const demoRole = localStorage.getItem('demo_role') || 'Driver';
-        setRole(demoRole);
       }
     });
-
-    // Event listener to react when role switcher in layout is used
-    const checkRole = () => {
-      const demoRole = localStorage.getItem('demo_role') || 'Driver';
-      setRole(demoRole);
-    };
-
-    window.addEventListener('storage', checkRole);
-    const interval = setInterval(checkRole, 500);
-
-    return () => {
-      window.removeEventListener('storage', checkRole);
-      clearInterval(interval);
-    };
   }, []);
 
   if (role === 'Fleet Owner') {
