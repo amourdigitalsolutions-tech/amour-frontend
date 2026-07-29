@@ -26,6 +26,7 @@ export default function JobCard({
   weeklyPayout,
   requiresCdlA,
   requiredLanguages = ['English', 'Amharic'],
+  t,
   onApplyClick
 }: JobCardProps) {
 
@@ -52,10 +53,10 @@ export default function JobCard({
         {/* Header Badges */}
         <div className="flex items-center justify-between gap-2">
           <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border ${getRunTypeStyle(runType)}`}>
-            {runType} Run
+            {runType} {t['job-run']}
           </span>
           <span className="text-[11px] font-semibold text-emerald-600 flex items-center gap-1 bg-emerald-50 px-2 py-0.5 rounded-full">
-            <ShieldCheck className="w-3.5 h-3.5" /> Verified Carrier
+            <ShieldCheck className="w-3.5 h-3.5" /> {t['job-verified-carrier']}
           </span>
         </div>
 
@@ -64,14 +65,14 @@ export default function JobCard({
           <h3 className="text-lg font-bold text-slate-900 group-hover:text-primary transition-colors leading-snug">
             {title}
           </h3>
-          <p className="text-xs font-semibold text-slate-500">{companyName || 'Amour Partner Carrier'}</p>
+          <p className="text-xs font-semibold text-slate-500">{companyName || t['job-amour-partner']}</p>
         </div>
 
         {/* Route Details */}
         <div className="p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-2 text-xs">
           <div className="flex items-center gap-2 text-slate-700 font-semibold">
             <MapPin className="w-4 h-4 text-primary shrink-0" />
-            <span>Origin: {originCity}, {originState}</span>
+            <span>{t['job-origin']} {originCity}, {originState}</span>
           </div>
           <div className="flex items-center gap-2 text-slate-600 pl-6">
             <ArrowRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
@@ -83,7 +84,7 @@ export default function JobCard({
         <div className="flex flex-wrap items-center gap-2 text-[11px]">
           {requiresCdlA && (
             <span className="bg-slate-100 text-slate-700 font-semibold px-2.5 py-0.5 rounded-md flex items-center gap-1">
-              <Truck className="w-3.5 h-3.5 text-slate-500" /> CDL-A Required
+              <Truck className="w-3.5 h-3.5 text-slate-500" /> {t['job-cdla-required']}
             </span>
           )}
           {requiredLanguages.map(lang => (
@@ -97,15 +98,15 @@ export default function JobCard({
       {/* Payout & Action Footer */}
       <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-4">
         <div>
-          <span className="text-[10px] uppercase font-bold text-slate-400 block">Est. Weekly Pay</span>
-          <p className="text-xl font-bold text-slate-900">{formattedPayout} <span className="text-xs font-normal text-slate-500">/ wk</span></p>
+          <span className="text-[10px] uppercase font-bold text-slate-400 block">{t['job-est-weekly-pay']}</span>
+          <p className="text-xl font-bold text-slate-900">{formattedPayout} <span className="text-xs font-normal text-slate-500">{t['job-per-week']}</span></p>
         </div>
 
         <button
           onClick={() => onApplyClick ? onApplyClick(id) : null}
           className="bg-primary hover:bg-primary-container text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-1.5"
         >
-          <span>Apply Now</span>
+          <span>{t['job-apply-now']}</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </div>

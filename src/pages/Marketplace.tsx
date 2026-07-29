@@ -2,64 +2,25 @@ import { useState, useEffect } from 'react';
 import MarketplaceHeader from '../components/marketplace/MarketplaceHeader';
 import SidebarFilters from '../components/marketplace/SidebarFilters';
 import TruckCard from '../components/marketplace/TruckCard';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, AlertCircle } from 'lucide-react';
 import { translations } from '../constants/translations';
-
-const MOCK_TRUCKS = [
-  {
-    id: '1',
-    title: '2023 Peterbilt 579',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCQ48pIuHicP_Slqw87Cmrw8OSXijTrVhkhcTAkccXiQZSpC6p06ejPI97aMS7doCrHnLhSeYFiwK8SrBfs_kNctOO5WqbEFPddTN0OI57cZiZX6O11qIq5zytgmgevXG6J41XxWctvmKxGluvMrVN89SVKFpK3DYmCly-sEHIcH2XX4GEKTuT0mIUh0LezIHHCNDe7yWjgMo5rchSmqkQYnoVNd0nkXaG4jci_oOUMhptzn65MVI0QcGBgWc5xq9rg3zYW6baPVk17',
-    mileage: '150,000 mi',
-    fuelType: 'Diesel',
-    price: '$145,000'
-  },
-  {
-    id: '2',
-    title: '2023 Kenworth KRC',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCCNgzwPVnU77CnZxGzkTwT9kz5_6Ci4Lev1ps87BVMzIuysonmUtjygzDrjU5QuDolYryCXJppPDf5ruTUohs1TeVyTKLDx8_EwUvfvFokL_eXKK83fHbWu1SNYb3AHcGnDNvP4nYxkorE_BCspSK4QcMqqvXnW4OFqUKIL2rr4zXUBOjoYB1qFvJxp02eVqT6OC5Lo7Y8Umw78SdaKKfwdKmbDL2IhcdXj8nZO_FYcbyZT1j1bYwH26E8LsyeUsz7onUTGF54YHOH',
-    mileage: '150,000 mi',
-    fuelType: 'Diesel',
-    price: '$145,000'
-  },
-  {
-    id: '3',
-    title: '2023 International NFT',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDLNUdM7C1d0yERaFMELdVuZe55lSJ9uyPX1UXr4Fw7ViLmliMsYspQD-bYwrxLD_LFGWiQL24gDwgJXylt1V27FzMiJcIPBzRvnG8qGb0pCkksFw1VWG2cF8Tz2hpes5VgwNnL1w4_I9wLlkjTRCShspPE4uqXu70CpLszQlSmgbwGECf0WVK9xxJLIEgsM6-xM7FR9Fg2YsDsOpx2uYZha5rIDbfbOy5EyKgs8_R0bGSE8zT7hcgEyl7uUh9I5Qv6fLsA5PLW6Hz6',
-    mileage: '130,000 mi',
-    fuelType: 'Diesel',
-    price: '$145,000'
-  },
-  {
-    id: '4',
-    title: '2023 Peterbilt 579',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBAdrGne1TWw0RdCOQbaU3oAXJyHNi-RiVamPg0wLN_UvuZeX0-a9JUzMfAXYwcm7eeEf7D1xziGLI-XDsnjUpfDZdHzR3fT5be6oCdO4Gf1hKVOBJQs4DtQ7lGzgEpC79ud2SF9fbbHV4S27tbKN1phblClX890C_J8xXHyCKWRIXixKJGQYgI5BrLZJsXXHdCbDlcubCImI6s_NOzVs3O3urYwOa9hn-Pmgm1KgzNw9CHqG2rh2wKAK0WQeVlNprB69jKH7T69bb6',
-    mileage: '150,000 mi',
-    fuelType: 'Diesel',
-    price: '$145,000'
-  },
-  {
-    id: '5',
-    title: '2023 Kenworth SFR',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCkWHjRb133HffOSuLYPcPlFTEvd9j8owDgcQOKPCLL4kASNPpb74xiyefTezA_P1prY56nSGJScAJPwTI-TVQcHPMG1V-I8DgORSoVTaOmFsKxaUpgiicmezJvklUChmo8dhnOZg_r6UUqnyGlPo2adX0zBPnv8XqWayK9FpOigsQHY7Gp1Xk_0benX8B_gc1-Qz9RwD1N0nIau_ekY_ENd8fERDV4EDke5SEWMH7PrQPbrGFhuByMSXlBgm2-Uf5SPRGNGstt4kcc',
-    mileage: '150,000 mi',
-    fuelType: 'Diesel',
-    price: '$175,000'
-  },
-  {
-    id: '6',
-    title: '2023 International RRT',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCyk_ig8tVt_Yj9cHvMhGPwIdz172EJelo4OGkkRCgumL8xUGHIkQwupAQRXtdDv4bz0-aWWmmxblp2lxD7ZcJ5EYVZJ6U9epwIvrWwOdlOcVf7Pba1kT6biJWci6XbWjwlAULVt8jR3oQFMG9YR5XIYwFLTZvMWYl47akiz1hmHgC_Sp38EVEkOIC2E9x8ZT0-YcAvi7qtXO4AWKjxhPCczUxivg_cegpCOlru_xzK8upjBV-QHdK3NA-YtNJHMZ57dXU_sstMad_e',
-    mileage: '150,000 mi',
-    fuelType: 'Diesel',
-    price: '$130,000'
-  }
-];
+import { getVehicles } from '../services/marketplace';
 
 export default function Marketplace() {
   const [lang, setLang] = useState<'en'|'am'|'ti'>(() => (localStorage.getItem('lang') as any) || 'en');
   const [trucks, setTrucks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
+  // Filter state
+  const [filters, setFilters] = useState({
+    make: '',
+    minPrice: '',
+    maxPrice: '',
+    minYear: '',
+    maxYear: ''
+  });
+
   const t = translations[lang];
 
   useEffect(() => {
@@ -67,38 +28,46 @@ export default function Marketplace() {
   }, [lang]);
 
   useEffect(() => {
-    import('../services/marketplace').then(({ getVehicles }) => {
-      getVehicles().then(data => {
+    setLoading(true);
+    setError(null);
+    
+    // Clean up empty filters
+    const activeFilters = Object.fromEntries(
+      Object.entries(filters).filter(([_, v]) => v !== '')
+    );
+    
+    getVehicles(activeFilters)
+      .then(data => {
         const results = Array.isArray(data) ? data : data.results || [];
-        if (results.length === 0) {
-          setTrucks(MOCK_TRUCKS);
-        } else {
-          // Format backend data to match TruckCard props if needed
-          const formatted = results.map((v: any) => ({
-            id: v.id,
-            title: `${v.year} ${v.make} ${v.model}`,
-            image: v.images && v.images.length > 0 ? v.images[0].image : MOCK_TRUCKS[0].image,
-            mileage: `${v.mileage} mi`,
-            fuelType: v.fuel_type || 'Diesel',
-            price: `$${parseFloat(v.price).toLocaleString()}`
-          }));
-          setTrucks(formatted);
-        }
-      }).catch(err => {
+        const formatted = results.map((v: any) => ({
+          id: v.id,
+          title: `${v.year} ${v.make} ${v.model}`,
+          image: v.images && v.images.length > 0 ? v.images[0].image : 'https://placehold.co/600x400/png?text=No+Image',
+          mileage: `${v.mileage || 0} mi`,
+          fuelType: v.fuel_type || 'Diesel',
+          price: `$${parseFloat(v.price || 0).toLocaleString()}`
+        }));
+        setTrucks(formatted);
+      })
+      .catch(err => {
         console.error(err);
-        setTrucks(MOCK_TRUCKS);
-      }).finally(() => {
+        setError(t['market-fetch-error']);
+      })
+      .finally(() => {
         setLoading(false);
       });
-    });
-  }, []);
+  }, [filters]);
+
+  const handleFilterChange = (key: string, value: string) => {
+    setFilters(prev => ({ ...prev, [key]: value }));
+  };
 
   return (
     <div className={`min-h-screen bg-surface text-slate-800 flex flex-col ${lang === 'en' ? 'font-inter' : 'font-noto-sans-ethiopic'}`}>
       <MarketplaceHeader lang={lang} setLang={setLang} t={t} />
       
       <main className="flex flex-1 overflow-hidden">
-        <SidebarFilters t={t} />
+        <SidebarFilters t={t} filters={filters} onChange={handleFilterChange} />
         
         <section className="flex-1 p-6 overflow-y-auto">
           {/* Grid Header */}
@@ -119,6 +88,15 @@ export default function Marketplace() {
           {/* Marketplace Grid */}
           {loading ? (
             <div className="flex justify-center py-20"><div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div></div>
+          ) : error ? (
+            <div className="flex flex-col items-center justify-center py-20 text-slate-500">
+              <AlertCircle className="w-12 h-12 text-rose-500 mb-4" />
+              <p>{error}</p>
+            </div>
+          ) : trucks.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-20 text-slate-500">
+              <p>{t['market-no-results']}</p>
+            </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 pb-12">
               {trucks.map((truck) => (

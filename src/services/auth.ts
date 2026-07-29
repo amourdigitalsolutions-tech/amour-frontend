@@ -53,6 +53,53 @@ export const registerUser = async (data: { phone: string, password: string, role
   return response.json();
 };
 
+export const refreshToken = async (): Promise<string | null> => {
+  const refresh = localStorage.getItem('refresh_token');
+  if (!refresh) return null;
+
+  try {
+    const response = await fetch(`${BASE_URL}/token/refresh/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refresh })
+    });
+
+    if (!response.ok) {
+      logout();
+      return null;
+    }
+
+    const data = await response.json();
+    localStorage.setItem('access_token', data.access);
+    return data.access;
+  } catch (error) {
+    logout();
+    return null;
+  }
+};
+
+export const fetchWithAuth = async (url: string, options: RequestInit = {}): Promise<Response> => {
+  let token = localStorage.getItem('access_token');
+  
+  const headers = new Headers(options.headers || {});
+  if (token) {
+    headers.set('Authorization', `Bearer ${token}`);
+  }
+
+  let response = await fetch(url, { ...options, headers });
+
+  if (response.status === 401 && token) {
+    // Try to refresh token
+    const newToken = await refreshToken();
+    if (newToken) {
+      headers.set('Authorization', `Bearer ${newToken}`);
+      response = await fetch(url, { ...options, headers });
+    }
+  }
+
+  return response;
+};
+
 let currentUserPromise: Promise<any> | null = null;
 
 export const getCurrentUser = async () => {
@@ -64,23 +111,16 @@ export const getCurrentUser = async () => {
     return currentUserPromise;
   }
 
-  currentUserPromise = fetch(`${BASE_URL}/users/me/`, {
-    headers: {
-      'Authorization': `Bearer ${token}`
-    }
-  }).then(response => {
-    if (!response.ok) {
-      if (response.status === 401) {
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
+  currentUserPromise = fetchWithAuth(`${BASE_URL}/users/me/`)
+    .then(response => {
+      if (!response.ok) {
+        return null;
       }
-      return null;
-    }
-    return response.json();
-  }).finally(() => {
-    // Clear the cached promise so next time it fetches fresh data
-    currentUserPromise = null;
-  });
+      return response.json();
+    }).finally(() => {
+      // Clear the cached promise so next time it fetches fresh data
+      currentUserPromise = null;
+    });
 
   return currentUserPromise;
 };
@@ -89,11 +129,10 @@ export const updateUserProfile = async (profileData: Record<string, any>) => {
   const token = localStorage.getItem('access_token');
   if (!token) throw new Error('Not authenticated');
 
-  const response = await fetch(`${BASE_URL}/users/me/`, {
+  const response = await fetchWithAuth(`${BASE_URL}/users/me/`, {
     method: 'PATCH',
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify(profileData)
   });

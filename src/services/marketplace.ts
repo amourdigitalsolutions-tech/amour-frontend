@@ -1,15 +1,11 @@
 import { API_BASE_URL as BASE_URL } from './api';
+import { fetchWithAuth } from './auth';
 
-export const getVehicles = async () => {
-  const token = localStorage.getItem('access_token');
-  const headers: Record<string, string> = {};
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  }
-
-  const response = await fetch(`${BASE_URL}/marketplace/vehicles/`, {
-    headers
-  });
+export const getVehicles = async (filters: Record<string, string> = {}) => {
+  const query = new URLSearchParams(filters).toString();
+  const url = query ? `${BASE_URL}/marketplace/vehicles/?${query}` : `${BASE_URL}/marketplace/vehicles/`;
+  
+  const response = await fetchWithAuth(url);
 
   if (!response.ok) {
     throw new Error('Failed to fetch vehicles');
@@ -18,15 +14,7 @@ export const getVehicles = async () => {
 };
 
 export const getVehicleDetails = async (id: string) => {
-  const token = localStorage.getItem('access_token');
-  const headers: Record<string, string> = {};
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  }
-
-  const response = await fetch(`${BASE_URL}/marketplace/vehicles/${id}/`, {
-    headers
-  });
+  const response = await fetchWithAuth(`${BASE_URL}/marketplace/vehicles/${id}/`);
 
   if (!response.ok) {
     throw new Error('Failed to fetch vehicle details');

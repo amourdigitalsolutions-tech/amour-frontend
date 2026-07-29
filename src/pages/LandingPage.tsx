@@ -52,10 +52,10 @@ function Header({ lang, setLang, t }: { lang: LanguageCode, setLang: (l: Languag
           {user ? (
             <>
               <Link to="/marketplace" className="hidden sm:block text-primary text-sm font-medium hover:underline decoration-2 underline-offset-4 px-4 py-2 transition-all font-inter">
-                Marketplace
+                {t['landing-marketplace']}
               </Link>
               <button onClick={() => navigate('/dashboard')} className="bg-primary text-on-primary px-6 py-2.5 rounded-lg text-sm font-medium shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all font-inter cursor-pointer">
-                Dashboard
+                {t['landing-dashboard']}
               </button>
             </>
           ) : (

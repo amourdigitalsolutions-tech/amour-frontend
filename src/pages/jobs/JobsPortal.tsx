@@ -5,87 +5,13 @@ import JobCard from '../../components/jobs/JobCard';
 import { getJobPostings, applyForJob } from '../../services/jobs';
 import { translations } from '../../constants/translations';
 import type { LanguageCode } from '../../types';
-import { Filter, ShieldCheck, CheckCircle2, ArrowRight, X } from 'lucide-react';
-
-const MOCK_JOBS = [
-  {
-    id: 'job-1',
-    title: 'Dedicated Atlanta to Dallas Loop - CDL-A',
-    companyName: 'Habesha Freight Carriers LLC',
-    runType: 'DEDICATED',
-    originCity: 'Atlanta',
-    originState: 'GA',
-    destinationRouting: 'Atlanta, GA → Dallas, TX → Atlanta, GA (Home Weekly)',
-    weeklyPayout: '$2,850.00',
-    requiresCdlA: true,
-    requiredLanguages: ['English', 'Amharic']
-  },
-  {
-    id: 'job-2',
-    title: 'Port Drayage Operator - Savannah Port Hub',
-    companyName: 'Red Sea Logistics Inc.',
-    runType: 'PORT',
-    originCity: 'Savannah',
-    originState: 'GA',
-    destinationRouting: 'Port of Savannah Local Terminal Drayage (Home Daily)',
-    weeklyPayout: '$2,400.00',
-    requiresCdlA: true,
-    requiredLanguages: ['English', 'Tigrinya']
-  },
-  {
-    id: 'job-3',
-    title: 'Regional Dry Van Freightiner Cascadia',
-    companyName: 'Horn of Africa Express',
-    runType: 'REGIONAL',
-    originCity: 'Dallas',
-    originState: 'TX',
-    destinationRouting: 'Texas & Oklahoma Regional Triangle',
-    weeklyPayout: '$3,100.00',
-    requiresCdlA: true,
-    requiredLanguages: ['English', 'Amharic']
-  },
-  {
-    id: 'job-4',
-    title: 'OTR Long-Haul Team Drivers Needed',
-    companyName: 'Ethiopia Diaspora Logistics',
-    runType: 'OTR',
-    originCity: 'Seattle',
-    originState: 'WA',
-    destinationRouting: 'Coast to Coast I-90 / I-80 Corridor',
-    weeklyPayout: '$3,800.00',
-    requiresCdlA: true,
-    requiredLanguages: ['English', 'Amharic', 'Tigrinya']
-  },
-  {
-    id: 'job-5',
-    title: 'Dedicated Midwest Automotive Route',
-    companyName: 'Abyssinia Logistics LLC',
-    runType: 'DEDICATED',
-    originCity: 'Columbus',
-    originState: 'OH',
-    destinationRouting: 'Columbus, OH → Detroit, MI Daily Dedicated',
-    weeklyPayout: '$2,650.00',
-    requiresCdlA: true,
-    requiredLanguages: ['English', 'Amharic']
-  },
-  {
-    id: 'job-6',
-    title: 'Port Drayage & Intermodal Terminal Run',
-    companyName: 'Savannah Intermodal Fleet',
-    runType: 'PORT',
-    originCity: 'Jacksonville',
-    originState: 'FL',
-    destinationRouting: 'Port of Jacksonville Intermodal Yard',
-    weeklyPayout: '$2,350.00',
-    requiresCdlA: true,
-    requiredLanguages: ['English', 'Tigrinya']
-  }
-];
+import { Filter, ShieldCheck, CheckCircle2, ArrowRight, X, AlertCircle } from 'lucide-react';
 
 export default function JobsPortal() {
   const [lang, setLang] = useState<LanguageCode>(() => (localStorage.getItem('lang') as LanguageCode) || 'en');
   const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedRunType, setSelectedRunType] = useState<string>('ALL');
 
@@ -102,31 +28,29 @@ export default function JobsPortal() {
   }, [lang]);
 
   useEffect(() => {
+    setLoading(true);
+    setError(null);
     getJobPostings()
       .then(data => {
         const results = Array.isArray(data) ? data : data?.results || [];
-        if (results.length === 0) {
-          setJobs(MOCK_JOBS);
-        } else {
-          // Format backend data
-          const formatted = results.map((j: any) => ({
-            id: j.id,
-            title: j.title,
-            companyName: j.company?.name || 'Amour Verified Carrier',
-            runType: j.run_type || 'DEDICATED',
-            originCity: j.origin_city,
-            originState: j.origin_state,
-            destinationRouting: j.destination_routing,
-            weeklyPayout: j.weekly_payout_estimate,
-            requiresCdlA: j.requires_cdl_a,
-            requiredLanguages: j.required_languages?.length > 0 ? j.required_languages : ['English', 'Amharic']
-          }));
-          setJobs(formatted);
-        }
+        // Format backend data
+        const formatted = results.map((j: any) => ({
+          id: j.id,
+          title: j.title,
+          companyName: j.company?.name || t['job-amour-partner'],
+          runType: j.run_type || 'DEDICATED',
+          originCity: j.origin_city,
+          originState: j.origin_state,
+          destinationRouting: j.destination_routing,
+          weeklyPayout: j.weekly_payout_estimate,
+          requiresCdlA: j.requires_cdl_a,
+          requiredLanguages: j.required_languages?.length > 0 ? j.required_languages : ['English', 'Amharic']
+        }));
+        setJobs(formatted);
       })
       .catch(err => {
         console.error(err);
-        setJobs(MOCK_JOBS);
+        setError(t['jobs-fetch-error']);
       })
       .finally(() => {
         setLoading(false);
@@ -185,13 +109,13 @@ export default function JobsPortal() {
         <div className="bg-gradient-to-r from-slate-900 via-primary to-slate-800 rounded-3xl p-6 md:p-10 text-white shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative overflow-hidden">
           <div className="relative z-10 space-y-3 max-w-2xl">
             <div className="inline-flex items-center gap-2 bg-emerald-500/20 text-emerald-300 text-xs font-semibold px-3.5 py-1 rounded-full border border-emerald-500/30">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" /> Dedicated East African Driver Network
+              <ShieldCheck className="w-4 h-4 text-emerald-400" /> {t['jobs-hero-badge']}
             </div>
             <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight leading-tight">
-              Higher Weekly Pay. Trusted Carriers. Home Time You Can Count On.
+              {t['jobs-hero-title']}
             </h1>
             <p className="text-slate-300 text-sm leading-relaxed">
-              Connect directly with Ethiopian & Eritrean fleet owners and top US logistics carriers offering dedicated routes, port drayage, and high-payout regional runs.
+              {t['jobs-hero-subtitle']}
             </p>
           </div>
 
@@ -199,7 +123,7 @@ export default function JobsPortal() {
             to="/signup" 
             className="relative z-10 bg-white text-primary font-bold px-6 py-3.5 rounded-2xl text-xs hover:bg-slate-100 transition-all shadow-lg flex items-center gap-2 cursor-pointer whitespace-nowrap"
           >
-            Create Driver Profile
+            {t['jobs-create-profile']}
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -208,7 +132,7 @@ export default function JobsPortal() {
         <div className="flex flex-wrap items-center justify-between gap-4 bg-white p-3 rounded-2xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 w-full sm:w-auto">
             <span className="text-xs font-bold text-slate-400 uppercase tracking-wider px-2 flex items-center gap-1.5">
-              <Filter className="w-3.5 h-3.5" /> Route Type:
+              <Filter className="w-3.5 h-3.5" /> {t['jobs-route-type']}
             </span>
             {['ALL', 'DEDICATED', 'PORT', 'REGIONAL', 'OTR'].map(type => (
               <button
@@ -220,13 +144,13 @@ export default function JobsPortal() {
                     : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                 }`}
               >
-                {type === 'ALL' ? 'All Jobs' : type === 'PORT' ? 'Port Drayage' : type}
+                {type === 'ALL' ? t['jobs-all-jobs'] : type === 'PORT' ? t['jobs-port-drayage'] : type}
               </button>
             ))}
           </div>
 
           <div className="text-xs font-semibold text-slate-500 px-3">
-            Showing <span className="text-slate-900 font-bold">{filteredJobs.length}</span> active driver positions
+            {t['jobs-showing']} <span className="text-slate-900 font-bold">{filteredJobs.length}</span> {t['jobs-active-positions']}
           </div>
         </div>
 
@@ -235,15 +159,20 @@ export default function JobsPortal() {
           <div className="flex justify-center py-20">
             <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
           </div>
+        ) : error ? (
+          <div className="flex flex-col items-center justify-center py-20 text-slate-500">
+            <AlertCircle className="w-12 h-12 text-rose-500 mb-4" />
+            <p className="text-base font-bold text-slate-700">{error}</p>
+          </div>
         ) : filteredJobs.length === 0 ? (
           <div className="bg-white rounded-3xl border border-slate-200 p-12 text-center space-y-3">
-            <p className="text-base font-bold text-slate-700">No driver positions match your search criteria.</p>
-            <p className="text-xs text-slate-400">Try adjusting your route filter or search terms.</p>
+            <p className="text-base font-bold text-slate-700">{t['jobs-no-results-title']}</p>
+            <p className="text-xs text-slate-400">{t['jobs-no-results-sub']}</p>
             <button 
               onClick={() => { setSearchTerm(''); setSelectedRunType('ALL'); }}
               className="bg-primary text-white font-bold text-xs px-4 py-2 rounded-xl mt-2 cursor-pointer"
             >
-              Reset Filters
+              {t['jobs-reset-filters']}
             </button>
           </div>
         ) : (
@@ -275,7 +204,7 @@ export default function JobsPortal() {
           <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-lg w-full p-6 md:p-8 space-y-6 animate-in fade-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div>
-                <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider block">Apply for Position</span>
+                <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider block">{t['jobs-apply-position']}</span>
                 <h3 className="text-lg font-bold text-slate-900">{selectedJob.title}</h3>
               </div>
               <button 
@@ -291,41 +220,41 @@ export default function JobsPortal() {
                 <div className="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
                   <CheckCircle2 className="w-8 h-8" />
                 </div>
-                <h4 className="text-xl font-bold text-slate-900">Application Submitted!</h4>
+                <h4 className="text-xl font-bold text-slate-900">{t['jobs-apply-success-title']}</h4>
                 <p className="text-xs text-slate-500 max-w-xs mx-auto">
-                  Your driver profile has been transmitted to <span className="font-bold text-slate-800">{selectedJob.companyName}</span>. They will contact you shortly.
+                  {t['jobs-apply-success-msg1']} <span className="font-bold text-slate-800">{selectedJob.companyName}</span>. {t['jobs-apply-success-msg2']}
                 </p>
                 <button
                   onClick={() => setApplyModalOpen(false)}
                   className="bg-primary text-white font-bold text-xs px-6 py-3 rounded-xl cursor-pointer"
                 >
-                  Back to Job Listings
+                  {t['jobs-back-to-listings']}
                 </button>
               </div>
             ) : (
               <form onSubmit={handleApplicationSubmit} className="space-y-4 text-xs">
                 <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-2">
                   <div className="flex justify-between font-semibold text-slate-700">
-                    <span>Carrier:</span>
+                    <span>{t['jobs-carrier']}</span>
                     <span className="font-bold text-slate-900">{selectedJob.companyName}</span>
                   </div>
                   <div className="flex justify-between font-semibold text-slate-700">
-                    <span>Est. Payout:</span>
-                    <span className="font-bold text-emerald-600">{selectedJob.weeklyPayout} / wk</span>
+                    <span>{t['jobs-est-payout']}</span>
+                    <span className="font-bold text-emerald-600">{selectedJob.weeklyPayout} {t['job-per-week']}</span>
                   </div>
                   <div className="flex justify-between font-semibold text-slate-700">
-                    <span>Route:</span>
+                    <span>{t['jobs-route']}</span>
                     <span className="text-slate-600">{selectedJob.originCity}, {selectedJob.originState}</span>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="font-bold text-slate-700 block">Cover Message / Notes to Carrier (Optional)</label>
+                  <label className="font-bold text-slate-700 block">{t['jobs-cover-message']}</label>
                   <textarea
                     rows={3}
                     value={applicationNotes}
                     onChange={(e) => setApplicationNotes(e.target.value)}
-                    placeholder="Mention your CDL experience, preferred start date, or language preferences..."
+                    placeholder={t['jobs-cover-placeholder']}
                     className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none text-xs"
                   />
                 </div>
@@ -336,13 +265,13 @@ export default function JobsPortal() {
                     onClick={() => setApplyModalOpen(false)}
                     className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl cursor-pointer"
                   >
-                    Cancel
+                    {t['jobs-cancel']}
                   </button>
                   <button
                     type="submit"
                     className="px-6 py-2.5 bg-primary hover:bg-primary-container text-white font-bold rounded-xl shadow-md cursor-pointer"
                   >
-                    Submit Application
+                    {t['jobs-submit-application']}
                   </button>
                 </div>
               </form>

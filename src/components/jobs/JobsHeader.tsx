@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Search, ChevronDown, Bell, LogOut, Check, Globe } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { logout } from '../../services/auth';
 import type { LanguageCode } from '../../types';
 import { useAuth } from '../../context/AuthContext';
+import { translations } from '../../constants/translations';
 
 interface JobsHeaderProps {
   lang: LanguageCode;
@@ -15,6 +16,7 @@ interface JobsHeaderProps {
 export default function JobsHeader({ lang, setLang, searchTerm, setSearchTerm }: JobsHeaderProps) {
   const [langOpen, setLangOpen] = useState(false);
   const { user } = useAuth();
+  const t = translations[lang] || translations.en;
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-slate-200 px-4 md:px-8 py-3.5 flex items-center justify-between shadow-sm">
@@ -26,8 +28,8 @@ export default function JobsHeader({ lang, setLang, searchTerm, setSearchTerm }:
           src="https://lh3.googleusercontent.com/aida-public/AB6AXuBja6gxy2Ajk_yIS4at-r-ox5VBde3waeWnR_HOr9qU6dtNgO3c2fyAU-ojWf7aKBaBiwqtAEtckorkOrxRmKN-ouugoiyea1og42H0dMEbm0kIQ7IAYnpOB-9Ih2nhsZgPG5VXm17jnPzwNQw-fVVZA4pGEmNmp01V7HenePu__Z6UHGZyyusjW5MjrIL1RZzlMf012SgY0sXNbng0POJCvcFenhIdEhUb50-1sr9SMTdUM5b0mseyzg" 
         />
         <div>
-          <span className="text-lg font-bold text-primary tracking-tight block leading-none">Amour Recruitment</span>
-          <span className="text-[10px] font-semibold text-emerald-600 tracking-wide uppercase">Driver Job Network</span>
+          <span className="text-lg font-bold text-primary tracking-tight block leading-none">{t['jobs-amour-recruitment']}</span>
+          <span className="text-[10px] font-semibold text-emerald-600 tracking-wide uppercase">{t['jobs-driver-network']}</span>
         </div>
       </Link>
 
@@ -39,7 +41,7 @@ export default function JobsHeader({ lang, setLang, searchTerm, setSearchTerm }:
             type="text" 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search by route, city, state, or company..."
+            placeholder={t['jobs-search-placeholder']}
             className="w-full pl-9 pr-4 py-2 text-xs bg-slate-100 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
           />
         </div>
@@ -94,10 +96,10 @@ export default function JobsHeader({ lang, setLang, searchTerm, setSearchTerm }:
         ) : (
           <div className="flex items-center gap-2">
             <Link to="/login" className="text-xs font-bold text-primary hover:underline px-3 py-2">
-              Log In
+              {t['landing-login']}
             </Link>
             <Link to="/signup" className="text-xs font-bold bg-primary text-white px-4 py-2 rounded-xl hover:bg-primary-container shadow-sm transition-all">
-              Sign Up
+              {t['signup-link']}
             </Link>
           </div>
         )}
