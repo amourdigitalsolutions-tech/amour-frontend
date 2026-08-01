@@ -1,8 +1,9 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, CheckCircle2, TrendingUp, Fuel, Calculator, Truck, Calendar, Hash, Settings, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, TrendingUp, Fuel, Calculator, Truck, Calendar, Hash, Settings, ShieldCheck, AlertCircle, Loader2 } from 'lucide-react';
 import MarketplaceHeader from '../components/marketplace/MarketplaceHeader';
 import { useState, useEffect } from 'react';
 import { translations } from '../constants/translations';
+import { getVehicleDetails } from '../services/marketplace';
 
 export default function TruckDetails() {
   const { id } = useParams();
@@ -11,31 +12,90 @@ export default function TruckDetails() {
   const [lang, setLang] = useState<'en'|'am'|'ti'>(() => (localStorage.getItem('lang') as any) || 'en');
   const t = translations[lang];
 
+  const [truck, setTruck] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
     localStorage.setItem('lang', lang);
   }, [lang]);
 
-  // Mock data mapping to our Django backend schema
-  const truck = {
-    id,
-    make: 'Peterbilt',
-    model: '579',
-    year: 2023,
-    vin: '1XP4D49X0NDXXXXXX',
-    vehicle_type: 'Semi-Truck (Tractor)',
-    price: '$145,000',
-    mileage: '150,000',
-    is_available: true,
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCQ48pIuHicP_Slqw87Cmrw8OSXijTrVhkhcTAkccXiQZSpC6p06ejPI97aMS7doCrHnLhSeYFiwK8SrBfs_kNctOO5WqbEFPddTN0OI57cZiZX6O11qIq5zytgmgevXG6J41XxWctvmKxGluvMrVN89SVKFpK3DYmCly-sEHIcH2XX4GEKTuT0mIUh0LezIHHCNDe7yWjgMo5rchSmqkQYnoVNd0nkXaG4jci_oOUMhptzn65MVI0QcGBgWc5xq9rg3zYW6baPVk17',
-    specs: {
-      engine: 'Cummins ISX15',
-      transmission: 'Eaton 13-Speed Manual',
-      sleeper_size: '72" Ultracab',
-      fuelType: 'Diesel',
-      axle_config: '6x4',
-      suspension: 'Air Ride'
+  useEffect(() => {
+    if (!id) {
+      setError('Invalid truck ID');
+      setLoading(false);
+      return;
     }
-  };
+
+    setLoading(true);
+    setError(null);
+
+    getVehicleDetails(id)
+      .then(data => {
+        const formatted = {
+          id: data.id || id,
+          make: data.make || 'Unknown',
+          model: data.model || 'Model',
+          year: data.year || new Date().getFullYear(),
+          vin: data.vin || 'N/A',
+          vehicle_type: data.vehicle_type || 'Semi-Truck (Tractor)',
+          price: data.price ? `$${parseFloat(String(data.price)).toLocaleString()}` : '$0',
+          mileage: data.mileage ? Number(data.mileage).toLocaleString() : '0',
+          is_available: data.is_available !== undefined ? data.is_available : true,
+          image: data.images && data.images.length > 0 ? data.images[0].image : 'https://placehold.co/800x500/png?text=No+Image+Available',
+          specs: {
+            engine: data.engine || data.specs?.engine || 'Standard Diesel Engine',
+            transmission: data.transmission || data.specs?.transmission || 'Manual / Auto',
+            sleeper_size: data.sleeper_size || data.specs?.sleeper_size || 'N/A',
+            fuelType: data.fuel_type || data.specs?.fuelType || 'Diesel',
+            axle_config: data.axle_config || data.specs?.axle_config || '6x4',
+            suspension: data.suspension || data.specs?.suspension || 'Air Ride'
+          }
+        };
+        setTruck(formatted);
+      })
+      .catch(err => {
+        console.error(err);
+        setError(t['market-fetch-error'] || 'Could not load vehicle details.');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [id, t]);
+
+  if (loading) {
+    return (
+      <div className={`min-h-screen bg-surface text-slate-800 flex flex-col ${lang === 'en' ? 'font-inter' : 'font-noto-sans-ethiopic'}`}>
+        <MarketplaceHeader lang={lang} setLang={setLang} t={t} />
+        <main className="max-w-[1280px] mx-auto w-full px-4 md:px-8 py-16 flex-1 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-4 text-slate-500">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            <p className="text-sm font-medium">Loading vehicle details...</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  if (error || !truck) {
+    return (
+      <div className={`min-h-screen bg-surface text-slate-800 flex flex-col ${lang === 'en' ? 'font-inter' : 'font-noto-sans-ethiopic'}`}>
+        <MarketplaceHeader lang={lang} setLang={setLang} t={t} />
+        <main className="max-w-[1280px] mx-auto w-full px-4 md:px-8 py-16 flex-1 flex flex-col items-center justify-center">
+          <div className="flex flex-col items-center gap-4 text-red-500 max-w-md text-center">
+            <AlertCircle className="w-12 h-12" />
+            <p className="font-semibold text-lg">{error || 'Vehicle not found'}</p>
+            <button 
+              onClick={() => navigate('/')} 
+              className="mt-4 bg-primary text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-primary-container transition-colors shadow-sm cursor-pointer"
+            >
+              {t['market-back'] || 'Back to Marketplace'}
+            </button>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className={`min-h-screen bg-surface text-slate-800 flex flex-col ${lang === 'en' ? 'font-inter' : 'font-noto-sans-ethiopic'}`}>

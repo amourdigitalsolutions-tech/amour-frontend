@@ -1,15 +1,8 @@
-const BASE_URL = 'http://127.0.0.1:8000/api';
+import { API_BASE_URL as BASE_URL } from './api';
+import { fetchWithAuth } from './auth';
 
 export const getJobPostings = async () => {
-  const token = localStorage.getItem('access_token');
-  const headers: Record<string, string> = {};
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  }
-
-  const response = await fetch(`${BASE_URL}/recruitment/job-postings/`, {
-    headers
-  });
+  const response = await fetchWithAuth(`${BASE_URL}/recruitment/job-postings/`);
 
   if (!response.ok) {
     throw new Error('Failed to fetch job postings');
@@ -18,15 +11,7 @@ export const getJobPostings = async () => {
 };
 
 export const getJobDetails = async (id: string) => {
-  const token = localStorage.getItem('access_token');
-  const headers: Record<string, string> = {};
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  }
-
-  const response = await fetch(`${BASE_URL}/recruitment/job-postings/${id}/`, {
-    headers
-  });
+  const response = await fetchWithAuth(`${BASE_URL}/recruitment/job-postings/${id}/`);
 
   if (!response.ok) {
     throw new Error('Failed to fetch job details');
@@ -40,11 +25,10 @@ export const applyForJob = async (jobId: string, notes: string = '') => {
     throw new Error('Please log in to apply for driver positions.');
   }
 
-  const response = await fetch(`${BASE_URL}/recruitment/job-applications/`, {
+  const response = await fetchWithAuth(`${BASE_URL}/recruitment/job-applications/`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify({
       job_posting: jobId,
