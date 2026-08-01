@@ -37,6 +37,7 @@ export const translations = {
     "error-password-short": "Password must contain at least 8 characters.",
     "error-auth-failed": "No active account found with the given credentials.",
     "error-generic": "An error occurred. Please try again.",
+    "error-network": "Cannot connect to the server. Please check your connection or try again later.",
 
     // Landing Page
     "landing-login": "Log In",
@@ -210,6 +211,7 @@ export const translations = {
     "error-password-short": "የይለፍ ቃል ቢያንስ 8 ፊደላት/ቁጥሮች መያዝ አለበት።",
     "error-auth-failed": "በተሰጠው መረጃ ምንም መለያ አልተገኘም።",
     "error-generic": "ስህተት ተከስቷል። እባክዎ እንደገና ይሞክሩ።",
+    "error-network": "ከአገልጋዩ ጋር መገናኘት አልተቻለም። እባክዎ ግንኙነትዎን ይፈትሹ ወይም ቆየት ብለው እንደገና ይሞክሩ።",
 
     // Landing Page
     "landing-login": "ይግቡ",
@@ -383,6 +385,7 @@ export const translations = {
     "error-password-short": "መሕለፊ ቃል ብውሑዱ 8 ፊደላት/ኣሃዛት ክህልዎ ኣለዎ።",
     "error-auth-failed": "በቲ ዝተዋህበ ሓበሬታ ዝኾነ ኣካውንት ኣይተረኽበን።",
     "error-generic": "ጌጋ አጋጢሙ። በጃኹም ዳግማይ ፈትኑ።",
+    "error-network": "ምስቲ ሰርቨር ክትራኸቡ ኣይተኻእለን። በጃኹም ርክబ్ኩም አጻርዩ ወይ ጸኒሕኩም ደገምኩም ፈትኑ።",
 
     // Landing Page
     "landing-login": "እቶ",

@@ -1,11 +1,16 @@
 import { API_BASE_URL as BASE_URL } from './api';
 
 export const loginWithPhone = async (phone: string, password: string) => {
-  const response = await fetch(`${BASE_URL}/token/`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ phone_number: phone, password }),
-  });
+  let response;
+  try {
+    response = await fetch(`${BASE_URL}/token/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone_number: phone, password }),
+    });
+  } catch (err) {
+    throw new Error('error-network');
+  }
   
   if (!response.ok) {
     const errorData = await response.json().catch(() => null);
@@ -25,16 +30,21 @@ export const loginWithPhone = async (phone: string, password: string) => {
 };
 
 export const registerUser = async (data: { phone: string, password: string, role: string, lang: string }) => {
-  const response = await fetch(`${BASE_URL}/users/register/`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      phone_number: data.phone,
-      password: data.password,
-      user_role: data.role,
-      language_preference: data.lang,
-    }),
-  });
+  let response;
+  try {
+    response = await fetch(`${BASE_URL}/users/register/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        phone_number: data.phone,
+        password: data.password,
+        user_role: data.role,
+        language_preference: data.lang,
+      }),
+    });
+  } catch (err) {
+    throw new Error('error-network');
+  }
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => null);
@@ -89,18 +99,23 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}): Pro
     headers.set('Authorization', `Bearer ${token}`);
   }
 
-  let response = await fetch(url, { ...options, headers });
+  try {
+    let response = await fetch(url, { ...options, headers });
 
-  if (response.status === 401 && token) {
-    // Try to refresh token
-    const newToken = await refreshToken();
-    if (newToken) {
-      headers.set('Authorization', `Bearer ${newToken}`);
-      response = await fetch(url, { ...options, headers });
+    if (response.status === 401 && token) {
+      // Try to refresh token
+      const newToken = await refreshToken();
+      if (newToken) {
+        headers.set('Authorization', `Bearer ${newToken}`);
+        response = await fetch(url, { ...options, headers });
+      }
     }
-  }
 
-  return response;
+    return response;
+  } catch (err: any) {
+    console.error(`Network error during request to ${url}:`, err);
+    throw new Error('error-network');
+  }
 };
 
 let currentUserPromise: Promise<any> | null = null;
@@ -120,6 +135,9 @@ export const getCurrentUser = async () => {
         return null;
       }
       return response.json();
+    }).catch(err => {
+      console.warn("Could not fetch current user profile (server offline or unreachable):", err.message);
+      return null;
     }).finally(() => {
       // Clear the cached promise so next time it fetches fresh data
       currentUserPromise = null;
